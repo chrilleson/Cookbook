@@ -4,7 +4,7 @@ namespace Cookbook.Api.Extensions;
 
 public static class ApiVersioningExtensions
 {
-    public static void AddVersioning(this IServiceCollection services) =>
+    public static IServiceCollection AddVersioning(this IServiceCollection services) =>
         services.AddApiVersioning(opt =>
         {
             opt.ReportApiVersions = true;

@@ -5,17 +5,20 @@ namespace Cookbook.Api.Extensions;
 
 public static class ApiExtensions
 {
-    public static void AddApi(this IServiceCollection services)
+    public static IServiceCollection AddApi(this IServiceCollection services)
     {
-        services.AddVersioning();
+        services
+            .AddVersioning()
+            .AddHttpClient()
+            .AddHttpContextAccessor()
+            .AddHsts()
+            .AddCors()
+            .AddEndpoints(Assembly.GetExecutingAssembly())
+            .ConfigureHttpJsonOptions(options => CustomJsonOptions.Configure(options.SerializerOptions))
+            .AddEndpointsApiExplorer()
+            .AddSwagger();
         services.AddHealthChecks();
-        services.AddHttpClient();
-        services.AddHttpContextAccessor();
-        services.AddHsts();
-        services.AddCors();
-        services.AddEndpoints(Assembly.GetExecutingAssembly());
-        services.ConfigureHttpJsonOptions(options => CustomJsonOptions.Configure(options.SerializerOptions));
-        services.AddEndpointsApiExplorer();
-        services.AddSwagger();
+
+        return services;
     }
 }

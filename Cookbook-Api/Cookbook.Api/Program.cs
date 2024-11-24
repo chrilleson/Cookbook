@@ -10,10 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
 
 // Add services to the container.
-builder.Services.AddPersistence(builder.Configuration.GetValue<string>("ConnectionStrings:Postgres"));
-builder.Services.AddRepositories();
-builder.Services.AddApplication();
-builder.Services.AddApi();
+builder.Services
+    .AddPersistence(builder.Configuration.GetValue<string>("ConnectionStrings:Postgres"))
+    .AddRepositories()
+    .AddApplication()
+    .AddApi();
 
 var app = builder.Build();
 

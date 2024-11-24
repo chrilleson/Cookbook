@@ -5,7 +5,7 @@ namespace Cookbook.Api.Extensions;
 
 public static class SwaggerExtensions
 {
-    public static void AddSwagger(this IServiceCollection services) =>
+    public static IServiceCollection AddSwagger(this IServiceCollection services) =>
         services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo { Title = "Cookbook.Api", Version = "v1" });

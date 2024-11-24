@@ -2,7 +2,7 @@
 
 public static class HstsExtensions
 {
-    public static void AddHsts(this IServiceCollection services) =>
+    public static IServiceCollection AddHsts(this IServiceCollection services) =>
         services.AddHsts(options =>
         {
             options.Preload = true;

@@ -4,7 +4,8 @@ namespace Cookbook.Repositories;
 
 public static class RepositoriesExtensions
 {
-    public static void AddRepositories(this IServiceCollection services)
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
+        return services;
     }
 }

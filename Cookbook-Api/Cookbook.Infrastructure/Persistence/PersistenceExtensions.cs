@@ -6,9 +6,11 @@ namespace Cookbook.Infrastructure.Persistence;
 
 public static class PersistenceExtensions
 {
-    public static void AddPersistence(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddPersistence(this IServiceCollection services, string connectionString)
     {
         services.AddDbContext<AppDbContext>(builder => builder.ConfigureDbContext(connectionString));
+
+        return services;
     }
     private static void ConfigureDbContext(this DbContextOptionsBuilder builder, string connectionString) =>
          builder
