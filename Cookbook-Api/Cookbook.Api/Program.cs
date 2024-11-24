@@ -34,7 +34,7 @@ app.UseSwaggerUI();
 
 app.UseHealthChecks("/health");
 
-app.MapControllers();
+app.MapEndpoints();
 app.MapGet("/", () => "Cookbook Api is alive and kicking!");
 
 app.Run();

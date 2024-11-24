@@ -1,4 +1,5 @@
-﻿using Cookbook.Common.Json;
+﻿using System.Reflection;
+using Cookbook.Common.Json;
 
 namespace Cookbook.Api.Extensions;
 
@@ -12,7 +13,8 @@ public static class ApiExtensions
         services.AddHttpContextAccessor();
         services.AddHsts();
         services.AddCors();
-        services.AddControllers().AddJsonOptions(options => CustomJsonOptions.Configure(options.JsonSerializerOptions));
+        services.AddEndpoints(Assembly.GetExecutingAssembly());
+        services.ConfigureHttpJsonOptions(options => CustomJsonOptions.Configure(options.SerializerOptions));
         services.AddEndpointsApiExplorer();
         services.AddSwagger();
     }
