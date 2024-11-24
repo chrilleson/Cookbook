@@ -1,0 +1,11 @@
+﻿@ApplicatinNameApi_HostAddress = https://localhost:5001
+
+GET {{ApplicatinNameApi_HostAddress}}/
+Accept: application/json
+
+Response
+{
+    "message": "Cookbook Api is alive and kicking!"
+}
+
+###

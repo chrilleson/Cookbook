@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Cookbook.Application\Cookbook.Application.csproj" />
+        <ProjectReference Include="..\Cookbook.Infrastructure\Cookbook.Infrastructure.csproj" />
+    </ItemGroup>
+    
+</Project>
