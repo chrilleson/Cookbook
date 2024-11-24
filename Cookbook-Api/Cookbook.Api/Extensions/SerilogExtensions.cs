@@ -1,5 +1,5 @@
 ﻿using Serilog;
-using Serilog.Sinks.Seq;
+using Serilog.Sinks.OpenTelemetry;
 
 namespace Cookbook.Api.Extensions;
 
@@ -11,6 +11,16 @@ public static class SerilogExtensions
             .Enrich.FromLogContext()
             .Enrich.WithClientIp()
             .WriteTo.Console()
-            .WriteTo.Seq(serverUrl: hostingContext.Configuration["Seq:ServerUrl"])
+            .WriteTo.OpenTelemetry(options =>
+            {
+                options.Endpoint = hostingContext.Configuration["Seq:ServerUrl"];
+                options.Protocol = OtlpProtocol.HttpProtobuf;
+                options.IncludedData = IncludedData.MessageTemplateTextAttribute | IncludedData.TraceIdField | IncludedData.SpanIdField;
+                options.ResourceAttributes = new Dictionary<string, object>
+                {
+                    ["service.name"] = "Cookbook.Api",
+                    ["environment"] = hostingContext.HostingEnvironment.EnvironmentName,
+                };
+            })
         );
 }

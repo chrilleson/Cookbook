@@ -29,7 +29,6 @@ app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 app.UseRouting();
 app.UseCors(builder.Configuration.GetValue<string>("AllowedOrigin")!);
-app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 
