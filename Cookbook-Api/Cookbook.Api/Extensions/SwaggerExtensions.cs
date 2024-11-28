@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Any;
+﻿using Cookbook.Domain.Units;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
 namespace Cookbook.Api.Extensions;
@@ -13,6 +14,16 @@ public static class SwaggerExtensions
             {
                 Type = "string",
                 Example = new OpenApiString("00:00:00")
+            });
+            options.MapType<Fluid>(() => new OpenApiSchema
+            {
+                Type = "string",
+                Enum = Enum.GetNames<Fluid>().Select(name => new OpenApiString(name)).ToList<IOpenApiAny>()
+            });
+            options.MapType<Weight>(() => new OpenApiSchema
+            {
+                Type = "string",
+                Enum = Enum.GetNames<Weight>().Select(name => new OpenApiString(name)).ToList<IOpenApiAny>()
             });
         });
 }
