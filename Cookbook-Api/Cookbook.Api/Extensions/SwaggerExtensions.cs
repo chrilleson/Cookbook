@@ -25,5 +25,10 @@ public static class SwaggerExtensions
                 Type = "string",
                 Enum = Enum.GetNames<Weight>().Select(name => new OpenApiString(name)).ToList<IOpenApiAny>()
             });
+            options.MapType<Piece>(() => new OpenApiSchema
+            {
+                Type = "string",
+                Enum = Enum.GetNames<Piece>().Select(name => new OpenApiString(name)).ToList<IOpenApiAny>()
+            });
         });
 }

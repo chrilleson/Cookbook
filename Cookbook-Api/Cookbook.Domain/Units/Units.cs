@@ -14,3 +14,8 @@ public enum Weight
     G,
     Mg
 }
+
+public enum Piece
+{
+    Piece
+}

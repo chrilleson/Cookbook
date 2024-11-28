@@ -11,7 +11,7 @@ internal static class RecipeDtoExtensions
             .Select((instruction, index) => (index, instruction))
             .ToDictionary(x => x.index, x => x.instruction);
         var ingredients = dto.Ingredients
-            .Select(ingredient => new Ingredient(ingredient.Name, ingredient.Amount, ingredient.Unit.Fluid, ingredient.Unit.Weight))
+            .Select(ingredient => new Ingredient(ingredient.Name, ingredient.Amount, ingredient.Unit.Fluid, ingredient.Unit.Weight, ingredient.Unit.Piece))
             .ToList();
 
         return new Domain.Recipe.Recipe(dto.Name, instructions, ingredients);
@@ -24,7 +24,7 @@ internal static class RecipeDtoExtensions
             .ToList();
 
         var ingredients = recipe.Ingredients
-            .Select(ingredient => new IngredientDto(ingredient.Name, ingredient.Amount, new Unit(Fluid: ingredient.Fluid, Weight: ingredient.Weight)))
+            .Select(ingredient => new IngredientDto(ingredient.Name, ingredient.Amount, new Unit(Fluid: ingredient.Fluid, Weight: ingredient.Weight, Piece: ingredient.Piece)))
             .ToList();
 
         return new RecipeDto(recipe.Name, instructions, ingredients);
