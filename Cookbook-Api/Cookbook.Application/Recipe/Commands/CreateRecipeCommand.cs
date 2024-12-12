@@ -29,7 +29,7 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, R
         try
         {
             var recipe = request.Recipe.ToEntity();
-            await _recipeRepository.Add(recipe);
+            await _recipeRepository.Add(recipe, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.NoContent();

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Cookbook.Application.Recipe.Queries;
 
-public record GetAllRecipesQuery() : IRequest<Result<IEnumerable<RecipeDto>>>;
+public record GetAllRecipesQuery : IRequest<Result<IEnumerable<RecipeDto>>>;
 
 public class GetAllRecipesQueryHandler : IRequestHandler<GetAllRecipesQuery, Result<IEnumerable<RecipeDto>>>
 {
@@ -24,7 +24,7 @@ public class GetAllRecipesQueryHandler : IRequestHandler<GetAllRecipesQuery, Res
     {
         try
         {
-            var recipes = await _recipeRepository.GetAll();
+            var recipes = await _recipeRepository.GetAll(cancellationToken);
             return Result<IEnumerable<RecipeDto>>.Success(recipes.Select(RecipeDtoExtensions.FromEntity));
         }
         catch (Exception e)
