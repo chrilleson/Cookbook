@@ -1,4 +1,5 @@
 ﻿using Cookbook.Application.Recipe.Models;
+using Cookbook.Domain.Recipe;
 using Cookbook.Domain.Units;
 
 namespace Cookbook.Tests.Application.Recipe.Models;
@@ -17,4 +18,8 @@ internal static class TestRecipe
         double amount = 500,
         Unit unit = null) =>
         new(name, amount, unit ?? Unit.FromWeight(Weight.G));
+
+    internal static Domain.Recipe.Recipe CreateRecipe(string name = "My favourite recipe", Dictionary<int, string> instructions = null,
+        IEnumerable<Ingredient> ingredients = null) =>
+        new(name, instructions, ingredients);
 }

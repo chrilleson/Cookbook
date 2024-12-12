@@ -9,4 +9,6 @@ public interface IRecipeRepository
     Task<Recipe> GetById(int id, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<Recipe>> GetAll(CancellationToken cancellationToken = default);
+
+    void Remove(Recipe recipe);
 }

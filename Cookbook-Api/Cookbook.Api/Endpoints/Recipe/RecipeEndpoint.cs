@@ -13,7 +13,8 @@ public class RecipeEndpoint : IEndpoint
     {
         var group = app.MapGroup("/recipes").WithTags("Recipes");
 
-        group.MapPost("/", async (IMediator mediator, RecipeDto recipeDto, CancellationToken cancellationToken) => (await Result
+        group.MapPost("/", async (IMediator mediator, RecipeDto recipeDto, CancellationToken cancellationToken) =>
+            (await Result
                 .Created(new CreateRecipeCommand(recipeDto))
                 .BindAsync(x => mediator.Send(x, cancellationToken)))
             .ToMinimalApiResult());
@@ -24,9 +25,16 @@ public class RecipeEndpoint : IEndpoint
                 .BindAsync(x => mediator.Send(x, cancellationToken)))
             .ToMinimalApiResult());
 
-        group.MapGet("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) => (await Result
+        group.MapGet("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) =>
+            (await Result
                 .Created(new GetRecipeByIdQuery(id))
                 .BindAsync(x => mediator.Send(x, cancellationToken)))
             .ToMinimalApiResult());
+
+        group.MapDelete("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) =>
+            (await Result
+                .Created(new RemoveRecipeCommand(id))
+                .BindAsync(x => mediator.Send(x, cancellationToken))
+            ).ToMinimalApiResult());
     }
 }

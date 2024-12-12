@@ -15,9 +15,9 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, R
 {
     private readonly IRecipeRepository _recipeRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<CreateRecipeCommand> _logger;
+    private readonly ILogger<CreateRecipeCommandHandler> _logger;
 
-    public CreateRecipeCommandHandler(IRecipeRepository recipeRepository, IUnitOfWork unitOfWork, ILogger<CreateRecipeCommand> logger)
+    public CreateRecipeCommandHandler(IRecipeRepository recipeRepository, IUnitOfWork unitOfWork, ILogger<CreateRecipeCommandHandler> logger)
     {
         _recipeRepository = recipeRepository;
         _unitOfWork = unitOfWork;

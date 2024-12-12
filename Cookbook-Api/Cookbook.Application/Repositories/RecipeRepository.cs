@@ -21,4 +21,7 @@ public class RecipeRepository : IRecipeRepository
 
     public async Task<IEnumerable<Domain.Recipe.Recipe>> GetAll(CancellationToken cancellationToken = default) =>
         await _dbContext.Recipes.ToListAsync(cancellationToken);
+
+    public void Remove(Domain.Recipe.Recipe recipe) =>
+        _dbContext.Recipes.Remove(recipe);
 }
