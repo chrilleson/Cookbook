@@ -27,6 +27,6 @@ internal static class RecipeDtoExtensions
             .Select(ingredient => new IngredientDto(ingredient.Name, ingredient.Amount, new Unit(Fluid: ingredient.Fluid, Weight: ingredient.Weight, Piece: ingredient.Piece)))
             .ToList();
 
-        return new RecipeDto(recipe.Name, instructions, ingredients);
+        return new RecipeDto(recipe.Id, recipe.Name, instructions, ingredients);
     }
 }
