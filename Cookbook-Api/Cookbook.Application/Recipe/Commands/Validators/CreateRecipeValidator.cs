@@ -13,6 +13,9 @@ public class CreateRecipeValidator : AbstractValidator<CreateRecipeCommand>
         When(x => x.Recipe.Ingredients.Any(), () =>
         {
             RuleForEach(x => x.Recipe.Ingredients).SetValidator(new IngredientDtoValidator());
+            RuleFor(x => x.Recipe.Ingredients.Select(x => x.Name))
+                .Must(x => x.Distinct().Count() == x.Count())
+                .WithMessage("Ingredient names must be unique");
         });
     }
 }
