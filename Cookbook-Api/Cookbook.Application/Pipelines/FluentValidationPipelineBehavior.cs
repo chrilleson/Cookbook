@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using Ardalis.Result;
+using Ardalis.Result.FluentValidation;
+using FluentValidation;
 using MediatR;
 
 namespace Cookbook.Application.Pipelines;
@@ -22,8 +24,7 @@ public class FluentValidationPipelineBehavior<TRequest, TResponse> : IPipelineBe
 
             if (!validationResult.IsValid)
             {
-                var errorMessages = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-                throw new ValidationException(errorMessages);
+                return Result<TResponse>.Invalid(validationResult.AsErrors());
             }
         }
 
