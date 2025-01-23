@@ -2,7 +2,7 @@
 
 namespace Cookbook.Application.Recipe.Models;
 
-public record RecipeDto(int Id, string Name, IEnumerable<string> Instructions, IEnumerable<IngredientDto> Ingredients);
+public record RecipeDto(int Id, string? Name, IEnumerable<string>? Instructions, IEnumerable<IngredientDto>? Ingredients);
 
 public record IngredientDto(string Name, double Amount, Unit Unit);
 

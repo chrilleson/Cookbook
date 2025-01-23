@@ -1,4 +1,4 @@
-﻿using Cookbook.Infrastructure.Persistence;
+using Cookbook.Infrastructure.Persistence;
 using Cookbook.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +16,7 @@ public class RecipeRepository : IRecipeRepository
     public async Task Add(Domain.Recipe.Recipe recipe, CancellationToken cancellationToken = default) =>
         await _dbContext.Recipes.AddAsync(recipe, cancellationToken);
 
-    public async Task<Domain.Recipe.Recipe> GetById(int id, CancellationToken cancellationToken = default) =>
+    public async Task<Domain.Recipe.Recipe?> GetById(int id, CancellationToken cancellationToken = default) =>
         await _dbContext.Recipes.FindAsync([id], cancellationToken);
 
     public async Task<IEnumerable<Domain.Recipe.Recipe>> GetAll(CancellationToken cancellationToken = default) =>
