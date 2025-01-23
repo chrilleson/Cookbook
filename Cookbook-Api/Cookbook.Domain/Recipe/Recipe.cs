@@ -1,14 +1,15 @@
 ﻿namespace Cookbook.Domain.Recipe;
 
-public class Recipe
+public sealed class Recipe
 {
     public int Id { get; init; }
-    public string Name { get; init; }
-    public Dictionary<int, string> Instructions { get; init; }
-    public IEnumerable<Ingredient> Ingredients { get; init; }
+    public string Name { get; set; }
+    public Dictionary<int, string> Instructions { get; set; }
+    public IEnumerable<Ingredient> Ingredients { get; set; }
 
-    public Recipe(string name, Dictionary<int, string> instructions, IEnumerable<Ingredient> ingredients)
+    public Recipe(int id, string name, Dictionary<int, string> instructions, IEnumerable<Ingredient> ingredients)
     {
+        Id = id;
         Name = name;
         Instructions = instructions;
         Ingredients = ingredients;

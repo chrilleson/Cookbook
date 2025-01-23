@@ -2,8 +2,6 @@
 using Cookbook.Application.Recipe.Commands.Validators;
 using Cookbook.Repositories;
 using Cookbook.Tests.Application.Recipe.Models;
-using FluentAssertions;
-using NSubstitute;
 
 namespace Cookbook.Tests.Application.Recipe.Validators;
 

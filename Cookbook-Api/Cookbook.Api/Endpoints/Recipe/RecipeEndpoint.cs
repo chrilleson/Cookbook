@@ -47,5 +47,13 @@ public class RecipeEndpoint : IEndpoint
             ).ToMinimalApiResult())
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status404NotFound);
+
+        group.MapPut("/{id:int}", async (IMediator mediator, int id, [FromBody]RecipeDto recipeDto, CancellationToken cancellationToken) =>
+            (await Result
+                .Created(new UpdateRecipeCommand(recipeDto))
+                .BindAsync(x => mediator.Send(x, cancellationToken)))
+            .ToMinimalApiResult())
+            .Produces(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status404NotFound);
     }
 }
