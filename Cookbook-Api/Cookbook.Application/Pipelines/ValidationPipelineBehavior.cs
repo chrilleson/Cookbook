@@ -25,7 +25,7 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelin
         {
             { IsGenericType: true } when typeof(TResponse).GetGenericTypeDefinition() == typeof(Result<>) => GetGenericResult(resultErrors),
             { IsGenericType: false } when typeof(TResponse) == typeof(Result) => (TResponse)(object)Result.Invalid(resultErrors),
-            _ => throw new FluentValidation.ValidationException(failures)
+            _ => throw new ValidationException(failures)
         };
     }
 
