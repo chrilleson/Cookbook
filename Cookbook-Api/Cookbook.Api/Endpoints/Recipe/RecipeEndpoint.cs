@@ -1,5 +1,6 @@
-using Ardalis.Result;
+﻿using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
+using Cookbook.Application.Extensions;
 using Cookbook.Application.Recipe.Commands;
 using Cookbook.Application.Recipe.Models;
 using Cookbook.Application.Recipe.Queries;
@@ -18,41 +19,70 @@ public class RecipeEndpoint : IEndpoint
             .ProducesProblem(statusCode: StatusCodes.Status422UnprocessableEntity)
             .ProducesProblem(statusCode: StatusCodes.Status500InternalServerError);
 
-        group.MapPost("/", async (IMediator mediator, RecipeDto recipeDto, CancellationToken cancellationToken) =>
-            (await Result
-                .Created(new CreateRecipeCommand(recipeDto))
-                .BindAsync(x => mediator.Send(x, cancellationToken)))
-            .ToMinimalApiResult())
-            .Produces(StatusCodes.Status201Created);
-
         group.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken) =>
-                (await Result
-                    .Created(new GetAllRecipesQuery())
-                    .BindAsync(x => mediator.Send(x, cancellationToken)))
-                .ToMinimalApiResult())
+            {
+                var result = await new Result()
+                    .Map(() => new GetAllRecipesQuery())
+                    .BindAsync(x => mediator.Send(x, cancellationToken))
+                    .MapAsync(x => x);
+
+                return result.ToMinimalApiResult();
+            })
             .Produces<IEnumerable<RecipeDto>>();
 
+        group.MapPost("/", async (IMediator mediator, RecipeDto recipeDto, CancellationToken cancellationToken) =>
+            {
+                var result = await new Result()
+                    .Map(() => new CreateRecipeCommand(recipeDto))
+                    .BindAsync(x => mediator.Send(x, cancellationToken))
+                    .MapAsync(x => x);
+
+                return result switch
+                {
+                    { ValidationErrors: var errors, IsSuccess: false } when errors.Any() => Results.ValidationProblem(detail: "Validation failed", errors: result.ValidationErrors.AsDictionary()),
+                    _ => result.ToMinimalApiResult(),
+                };
+            })
+            .Produces<RecipeDto>(StatusCodes.Status201Created)
+            .ProducesValidationProblem();
+
+
         group.MapGet("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) =>
-            (await Result
-                .Created(new GetRecipeByIdQuery(id))
-                .BindAsync(x => mediator.Send(x, cancellationToken)))
-            .ToMinimalApiResult())
-            .Produces<RecipeDto>()
+            {
+                var result = await new Result()
+                    .Map(() => new GetRecipeByIdQuery(id))
+                    .BindAsync(x => mediator.Send(x, cancellationToken))
+                    .MapAsync(x => x);
+
+                return result.ToMinimalApiResult();
+            })
+            .Produces<Result<RecipeDto>>()
             .ProducesProblem(StatusCodes.Status404NotFound);
 
         group.MapDelete("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) =>
-            (await Result
-                .Created(new RemoveRecipeCommand(id))
-                .BindAsync(x => mediator.Send(x, cancellationToken))
-            ).ToMinimalApiResult())
-            .Produces(StatusCodes.Status204NoContent)
-            .ProducesProblem(StatusCodes.Status404NotFound);
+            {
+                var result = await new Result()
+                    .BindAsync(_ => mediator.Send(new RemoveRecipeCommand(id), cancellationToken))
+                    .MapAsync(x => x);
 
-        group.MapPut("/{id:int}", async (IMediator mediator, int id, [FromBody]RecipeDto recipeDto, CancellationToken cancellationToken) =>
-            (await Result
-                .Created(new UpdateRecipeCommand(recipeDto))
-                .BindAsync(x => mediator.Send(x, cancellationToken)))
-            .ToMinimalApiResult())
+                return result switch
+                {
+                    { ValidationErrors: var errors, IsSuccess: false } when errors.Any() => Results.ValidationProblem(detail: "Validation failed", errors: result.ValidationErrors.AsDictionary()),
+                    _ => result.ToMinimalApiResult(),
+                };
+            })
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesValidationProblem();
+
+        group.MapPut("/{id:int}", async (IMediator mediator, int id, [FromBody] RecipeDto recipeDto, CancellationToken cancellationToken) =>
+            {
+                var result = await new Result()
+                    .Map(() => new UpdateRecipeCommand(recipeDto))
+                    .BindAsync(x => mediator.Send(x, cancellationToken));
+
+                return result.ToMinimalApiResult();
+            })
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status404NotFound);
     }

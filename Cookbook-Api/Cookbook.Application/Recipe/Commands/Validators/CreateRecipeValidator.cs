@@ -26,7 +26,7 @@ public class IngredientDtoValidator : AbstractValidator<IngredientDto>
     {
         RuleFor(x => x.Name).NotEmpty().WithMessage("Ingredient name is required");
         RuleFor(x => x.Amount).NotEmpty().WithMessage("Ingredient amount is required");
-        RuleFor(x => x.Unit).Must(x => x.Fluid is not null || x.Weight is not null).WithMessage("Ingredient unit must be either fluid or weight");
+        RuleFor(x => x.Unit).Must(x => x.Fluid is not null || x.Weight is not null || x.Piece is not null).WithMessage("Ingredient unit must be either fluid, weight, or piece");
         RuleFor(x => x.Unit.Fluid)
             .IsInEnum()
             .When(x => x.Unit.Fluid is not null)
@@ -35,5 +35,9 @@ public class IngredientDtoValidator : AbstractValidator<IngredientDto>
             .IsInEnum()
             .When(x => x.Unit.Weight is not null)
             .WithMessage("Weight unit is invalid");
+        RuleFor(x => x.Unit.Piece)
+            .IsInEnum()
+            .When(x => x.Unit.Piece is not null)
+            .WithMessage("Piece unit is invalid");
     }
 }
