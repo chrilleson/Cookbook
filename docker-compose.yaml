@@ -33,7 +33,7 @@ services:
     ports:
       - '8080:8080'
   seq:
-    image: datalust/seq:2024.2
+    image: datalust/seq:latest
     ports:
       - '5341:80'
     environment:
