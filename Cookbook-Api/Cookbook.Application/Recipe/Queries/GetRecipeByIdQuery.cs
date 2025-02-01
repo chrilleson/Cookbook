@@ -26,13 +26,13 @@ public class GetRecipeByIdQueryHandler : IRequestHandler<GetRecipeByIdQuery, Res
         {
             var recipe = await _recipeRepository.GetById(request.Id, cancellationToken);
             return recipe is not null
-                ? Result.Success(recipe.FromEntity())
-                : Result<RecipeDto>.NotFound();
+                ? Result.Success(recipe.FromEntity(), "Recipe found")
+                : Result<RecipeDto>.NotFound("Recipe not found");
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Could not find recipe with id: {Id}", request.Id);
-            return Result<RecipeDto>.Error("Could not find recipe");
+            return Result<RecipeDto>.Error("Something went wrong while fetching recipe");
         }
     }
 }
