@@ -2,7 +2,7 @@
 
 namespace Cookbook.Infrastructure.Persistence;
 
-public class UnitOfWork : IUnitOfWork, IDisposable
+public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _dbContext;
 
@@ -40,5 +40,6 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     public void Dispose()
     {
         _dbContext.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
