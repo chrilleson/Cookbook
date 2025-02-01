@@ -9,9 +9,9 @@ using Unit = MediatR.Unit;
 
 namespace Cookbook.Application.Recipe.Commands;
 
-public record CreateRecipeCommand(RecipeDto Recipe) : IRequest<Result<Unit>>;
+public record CreateRecipeCommand(RecipeDto Recipe) : IRequest<Result<RecipeDto>>;
 
-public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, Result<Unit>>
+public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, Result<RecipeDto>>
 {
     private readonly IRecipeRepository _recipeRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +24,7 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, R
         _logger = logger;
     }
 
-    public async Task<Result<Unit>> Handle(CreateRecipeCommand request, CancellationToken cancellationToken)
+    public async Task<Result<RecipeDto>> Handle(CreateRecipeCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -32,13 +32,13 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, R
             await _recipeRepository.Add(recipe, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.NoContent();
+            return Result.Created(recipe.FromEntity(), RecipeRoutes.FormatRoute(RecipeRoutes.GetRecipe, recipe.Id));
         }
         catch (Exception e)
         {
             _unitOfWork.Rollback();
             _logger.LogError(e, "Something went wrong while creating new recipe");
-            return Result<Unit>.Error(e.Message);
+            return Result.Error(e.Message);
         }
     }
 }
