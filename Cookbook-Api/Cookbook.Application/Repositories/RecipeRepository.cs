@@ -16,6 +16,9 @@ public class RecipeRepository : IRecipeRepository
     public async Task Add(Domain.Recipe.Recipe recipe, CancellationToken cancellationToken = default) =>
         await _dbContext.Recipes.AddAsync(recipe, cancellationToken);
 
+    public async Task<bool> AnyById(int id, CancellationToken cancellationToken = default) =>
+        await _dbContext.Recipes.AnyAsync(x => x.Id == id, cancellationToken);
+
     public async Task<Domain.Recipe.Recipe?> GetById(int id, CancellationToken cancellationToken = default) =>
         await _dbContext.Recipes.FindAsync([id], cancellationToken);
 

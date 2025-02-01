@@ -1,11 +1,11 @@
 ﻿using Cookbook.Repositories;
 using FluentValidation;
 
-namespace Cookbook.Application.Recipe.Commands.Validators;
+namespace Cookbook.Application.Recipe.Queries.Validators;
 
-public class RemoveRecipeValidator : AbstractValidator<RemoveRecipeCommand>
+public class GetRecipeByIdValidator : AbstractValidator<GetRecipeByIdQuery>
 {
-    public RemoveRecipeValidator(IRecipeRepository recipeRepository)
+    public GetRecipeByIdValidator(IRecipeRepository recipeRepository)
     {
         RuleFor(x => x.Id)
             .MustAsync(async (id, cancellationToken) =>

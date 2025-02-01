@@ -26,10 +26,8 @@ public class RemoveRecipeCommandHandler : IRequestHandler<RemoveRecipeCommand, R
         try
         {
             var recipe = await _recipeRepository.GetById(request.Id, cancellationToken);
-            if (recipe is null)
-            {
-                return Result<Unit>.NotFound();
-            }
+            if (recipe is null) return Result<Unit>.NotFound();
+
             _recipeRepository.Remove(recipe);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
