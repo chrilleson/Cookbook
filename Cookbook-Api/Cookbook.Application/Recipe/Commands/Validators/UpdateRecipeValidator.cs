@@ -1,0 +1,38 @@
+﻿using Cookbook.Repositories;
+using FluentValidation;
+
+namespace Cookbook.Application.Recipe.Commands.Validators;
+
+public class UpdateRecipeValidator : AbstractValidator<UpdateRecipeCommand>
+{
+    public UpdateRecipeValidator(IRecipeRepository recipeRepository)
+    {
+        RuleFor(x => x.Recipe.Id)
+            .MustAsync(async (id, cancellationToken) =>
+            {
+                var recipe = await recipeRepository.AnyById(id, cancellationToken);
+                return recipe;
+            })
+            .WithMessage("Recipe with id {PropertyValue} not found");
+        RuleFor(x => x.Recipe.Id).NotEmpty().WithMessage("Recipe id is required");
+        RuleFor(x => x.Recipe.Name)
+            .NotEmpty()
+            .When(x => x.Recipe.Name is not null)
+            .WithMessage("Recipe name is required");
+        RuleFor(x => x.Recipe.Ingredients)
+            .NotEmpty()
+            .When(x => x.Recipe.Ingredients is not null)
+            .WithMessage("Recipe ingredients are required");
+        RuleFor(x => x.Recipe.Instructions)
+            .NotEmpty()
+            .When(x => x.Recipe.Instructions is not null)
+            .WithMessage("Recipe instructions are required");
+        When(x => x.Recipe.Ingredients?.Any() ?? false, () =>
+        {
+            RuleForEach(x => x.Recipe.Ingredients).SetValidator(new IngredientDtoValidator());
+            RuleFor(x => x.Recipe.Ingredients!.Select(x => x.Name))
+                .Must(x => x.Distinct().Count() == x.Count())
+                .WithMessage("Ingredient names must be unique");
+        });
+    }
+}
