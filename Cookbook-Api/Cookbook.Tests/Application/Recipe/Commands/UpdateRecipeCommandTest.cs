@@ -3,7 +3,9 @@ using Cookbook.Application.Recipe.Commands;
 using Cookbook.Infrastructure.Persistence;
 using Cookbook.Repositories;
 using Cookbook.Tests.Application.Recipe.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using NSubstitute.ExceptionExtensions;
 
 namespace Cookbook.Tests.Application.Recipe.Commands;
@@ -51,6 +53,42 @@ public class UpdateRecipeCommandTest
 
         actual.Status.Should().Be(ResultStatus.Error);
         unitOfWork.Received(1).Rollback();
+    }
+
+    [Fact]
+    public async Task UpdateRecipeCommand_RecipeAlreadyExists_ReturnsConflict()
+    {
+        var command = new UpdateRecipeCommand(TestRecipe.CreateRecipeDto());
+        var (sut, recipeRepository, unitOfWork) = CreateSut();
+        var existingRecipe = TestRecipe.CreateRecipe();
+        recipeRepository.GetById(command.Recipe.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Error", new PostgresException(default, default, default, "23505", default)));
+
+        var actual = await sut.Handle(command, CancellationToken.None);
+
+        actual.Status.Should().Be(ResultStatus.Conflict);
+        actual.IsConflict().Should().BeTrue();
+        actual.Errors.Should().Contain("Recipe already exists");
+        unitOfWork.Received(1).Rollback();
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Recipe.Id));
+    }
+
+    [Fact]
+    public async Task UpdateRecipeCommand_ThrowsDbUpdateException_ReturnsError()
+    {
+        var command = new UpdateRecipeCommand(TestRecipe.CreateRecipeDto());
+        var (sut, recipeRepository, unitOfWork) = CreateSut();
+        var existingRecipe = TestRecipe.CreateRecipe();
+        recipeRepository.GetById(command.Recipe.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Error"));
+
+        var actual = await sut.Handle(command, CancellationToken.None);
+
+        actual.Status.Should().Be(ResultStatus.Error);
+        actual.Errors.Should().Contain("Error");
+        actual.IsError().Should().BeTrue();
+        unitOfWork.Received(1).Rollback();
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Recipe.Id));
     }
 
     private static (UpdateRecipeCommandHandler, IRecipeRepository, IUnitOfWork) CreateSut()

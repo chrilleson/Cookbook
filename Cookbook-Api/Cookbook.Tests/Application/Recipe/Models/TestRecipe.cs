@@ -25,4 +25,12 @@ internal static class TestRecipe
         Dictionary<int, string>? instructions = null,
         IEnumerable<Ingredient>? ingredients = null) =>
         new(id, name, instructions, ingredients);
+
+    internal static Ingredient CreateIngredient(
+        string name = "Beef",
+        double amount = 500,
+        Fluid? fluid = null,
+        Weight? weight = null,
+        Piece? piece = null) =>
+        new(name, amount, fluid, weight, piece);
 }
