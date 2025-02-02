@@ -17,6 +17,9 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .IsRequired()
             .HasMaxLength(100);
 
+        builder.Property(r => r.Description)
+            .HasMaxLength(500);
+
         builder.Property(r => r.Ingredients)
             .IsRequired()
             .HasColumnType("jsonb");

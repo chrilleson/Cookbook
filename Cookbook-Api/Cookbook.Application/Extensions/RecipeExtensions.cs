@@ -14,12 +14,13 @@ public static class RecipeExtensions
             .Select(ingredient => new Ingredient(ingredient.Name, ingredient.Amount, ingredient.Unit.Fluid, ingredient.Unit.Weight, ingredient.Unit.Piece))
             .ToList();
 
-        return new Domain.Recipe.Recipe(dto.Id, dto.Name!, instructions, ingredients);
+        return new Domain.Recipe.Recipe(dto.Id, dto.Name!, dto.Description!, instructions, ingredients);
     }
 
     public static Domain.Recipe.Recipe Update(this Domain.Recipe.Recipe recipe, RecipeDto dto)
     {
         recipe.Name = dto.Name ?? recipe.Name;
+        recipe.Description = dto.Description ?? recipe.Description;
         recipe.Instructions = dto.Instructions?
             .Select((instruction, index) => (index, instruction))
             .ToDictionary(x => x.index, x => x.instruction) ?? recipe.Instructions;

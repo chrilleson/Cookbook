@@ -9,9 +9,10 @@ internal static class TestRecipe
     internal static RecipeDto CreateRecipeDto(
         int id = 1,
         string name = "My favourite recipe",
+        string description = "This is my favourite recipe",
         IEnumerable<string>? instructions = null,
         IEnumerable<IngredientDto>? ingredients = null) =>
-        new(id, name, instructions, ingredients);
+        new(id, name, description, instructions, ingredients);
 
     internal static IngredientDto CreateIngredientDto(
         string name = "Beef",
@@ -22,9 +23,10 @@ internal static class TestRecipe
     internal static Domain.Recipe.Recipe CreateRecipe(
         int id = 1,
         string name = "My favourite recipe",
+        string description = "This is my favourite recipe",
         Dictionary<int, string>? instructions = null,
         IEnumerable<Ingredient>? ingredients = null) =>
-        new(id, name, instructions, ingredients);
+        new(id, name, description, instructions, ingredients);
 
     internal static Ingredient CreateIngredient(
         string name = "Beef",
