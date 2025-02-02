@@ -12,7 +12,7 @@ public class RemoveRecipeValidatorTest
     {
         var command = new RemoveRecipeCommand(1);
         var (sut, recipeRepository) = CreateSut();
-        recipeRepository.GetById(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(TestRecipe.CreateRecipe());
+        recipeRepository.AnyById(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(true);
 
         var result = await sut.ValidateAsync(command, CancellationToken.None);
 
@@ -24,7 +24,7 @@ public class RemoveRecipeValidatorTest
     {
         var command = new RemoveRecipeCommand(1);
         var (sut, recipeRepository) = CreateSut();
-        recipeRepository.GetById(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(null as Domain.Recipe.Recipe);
+        recipeRepository.AnyById(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(false);
 
         var result = await sut.ValidateAsync(command, CancellationToken.None);
 

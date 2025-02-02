@@ -26,7 +26,7 @@ public class CreateRecipeValidatorTest
 
     [Theory]
     [MemberData(nameof(InvalidData))]
-    public void ModelIsInvalid_ShouldHaveErrors(RecipeDto recipe, string property, string errorMessage)
+    public void CommandIsInvalid_ShouldHaveErrors(RecipeDto recipe, string property, string errorMessage)
     {
         var sut = CreateSut();
 
@@ -43,9 +43,10 @@ public class CreateRecipeValidatorTest
         { TestRecipe.CreateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto(name: "", amount: 500, unit: Unit.FromWeight(Weight.G))]), "Recipe.Ingredients[0].Name", "Ingredient name is required" },
         { TestRecipe.CreateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: Enumerable.Repeat(TestRecipe.CreateIngredientDto(name: "Test", amount: 500, unit: Unit.FromWeight(Weight.G)), 2)), "", "Ingredient names must be unique" },
         { TestRecipe.CreateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto(name: "Beef", amount: default, unit: Unit.FromWeight(Weight.G))]), "Recipe.Ingredients[0].Amount", "Ingredient amount is required" },
-        { TestRecipe.CreateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto(name: "Beef", amount: 500, unit: new Unit())]), "Recipe.Ingredients[0].Unit", "Ingredient unit must be either fluid or weight" },
+        { TestRecipe.CreateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto(name: "Beef", amount: 500, unit: new Unit())]), "Recipe.Ingredients[0].Unit", "Ingredient unit must be either fluid, weight, or piece" },
         { TestRecipe.CreateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto(name: "Beef", amount: 500, unit: Unit.FromFluid((Fluid)999))]), "Recipe.Ingredients[0].Unit.Fluid", "Fluid unit is invalid" },
         { TestRecipe.CreateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto(name: "Beef", amount: 500, unit: Unit.FromWeight((Weight)999))]), "Recipe.Ingredients[0].Unit.Weight", "Weight unit is invalid" },
+        { TestRecipe.CreateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto(name: "Beef", amount: 500, unit: Unit.FromPiece((Piece)999))]), "Recipe.Ingredients[0].Unit.Piece", "Piece unit is invalid" },
     };
 
     private static CreateRecipeValidator CreateSut() => new();
