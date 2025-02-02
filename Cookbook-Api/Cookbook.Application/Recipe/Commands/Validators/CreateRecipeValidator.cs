@@ -8,12 +8,13 @@ public class CreateRecipeValidator : AbstractValidator<CreateRecipeCommand>
     public CreateRecipeValidator()
     {
         RuleFor(x => x.Recipe.Name).NotEmpty().WithMessage("Name is required");
+        RuleFor(x => x.Recipe.Name).MaximumLength(100).WithMessage("Name must not exceed 100 characters");
         RuleFor(x => x.Recipe.Instructions).NotEmpty().WithMessage("Instructions are required");
         RuleFor(x => x.Recipe.Ingredients).NotEmpty().WithMessage("Ingredients are required");
-        When(x => x.Recipe.Ingredients.Any(), () =>
+        When(x => x.Recipe.Ingredients?.Any() ?? false, () =>
         {
             RuleForEach(x => x.Recipe.Ingredients).SetValidator(new IngredientDtoValidator());
-            RuleFor(x => x.Recipe.Ingredients.Select(x => x.Name))
+            RuleFor(x => x.Recipe.Ingredients!.Select(x => x.Name))
                 .Must(x => x.Distinct().Count() == x.Count())
                 .WithMessage("Ingredient names must be unique");
         });
