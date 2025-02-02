@@ -2,6 +2,7 @@
 using Cookbook.Infrastructure.Persistence;
 using Cookbook.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Cookbook.Application.Recipe.Commands;
@@ -32,6 +33,12 @@ public class RemoveRecipeCommandHandler : IRequestHandler<RemoveRecipeCommand, R
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.NoContent();
+        }
+        catch (DbUpdateException e)
+        {
+            _unitOfWork.Rollback();
+            _logger.LogError(e, "Something went wrong while removing recipe. Id: {Id}", request.Id);
+            return Result.Error(e.Message);
         }
         catch (Exception e)
         {

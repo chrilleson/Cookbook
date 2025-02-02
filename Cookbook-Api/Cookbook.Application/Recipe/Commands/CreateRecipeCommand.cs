@@ -4,7 +4,9 @@ using Cookbook.Application.Recipe.Models;
 using Cookbook.Infrastructure.Persistence;
 using Cookbook.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using Unit = MediatR.Unit;
 
 namespace Cookbook.Application.Recipe.Commands;
@@ -33,6 +35,18 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, R
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.Created(recipe.FromEntity(), RecipeRoutes.FormatRoute(RecipeRoutes.GetRecipe, recipe.Id));
+        }
+        catch (DbUpdateException e) when (e.InnerException is PostgresException { SqlState: "23505" })
+        {
+            _unitOfWork.Rollback();
+            _logger.LogError(e, "Recipe already exists");
+            return Result.Conflict("Recipe already exists");
+        }
+        catch (DbUpdateException e)
+        {
+            _unitOfWork.Rollback();
+            _logger.LogError(e, "Something went wrong while creating new recipe");
+            return Result.Error(e.Message);
         }
         catch (Exception e)
         {
