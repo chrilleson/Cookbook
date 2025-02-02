@@ -24,7 +24,7 @@ public class CreateRecipeCommandTest
 
         actual.Status.Should().Be(ResultStatus.Created);
         actual.Value.Name.Should().Be("My favourite recipe");
-        actual.Location.Should().Be("/api/recipe/1");
+        actual.Location.Should().Be("/api/recipes/1");
         await recipeRepository.Received(1).Add(Arg.Is<Domain.Recipe.Recipe>(x => x.Name == "My favourite recipe"), Arg.Any<CancellationToken>());
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
