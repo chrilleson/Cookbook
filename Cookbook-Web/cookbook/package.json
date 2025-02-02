@@ -1,0 +1,41 @@
+{
+  "name": "cookbook",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "next build",
+    "clean": "git clean -xdf node_modules",
+    "dev": "next dev --turbopack",
+    "dev:ssl": "concurrently \"next dev --turbopack -p 3100\" \"local-ssl-proxy --key ./localhost-key.pem --cert ./localhost.pem --source 3000 --target 3100\"",
+    "dev:makecert": "mkcert -install && mkcert localhost",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.66.0",
+    "@trpc/client": "11.0.0-rc.730",
+    "@trpc/next": "11.0.0-rc.730",
+    "@trpc/react-query": "11.0.0-rc.730",
+    "@trpc/server": "11.0.0-rc.730",
+    "next": "15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "superjson": "^2.2.2",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.6",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@7.33.7+sha512.7afe2410642b39c698df46da4ce5c7231a5cce360698d69f8cf8f42257d40b3e43f231053b07b8de849fd4ffbf4a71ff57b835137777a352388f3d3da747200e"
+}
