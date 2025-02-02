@@ -18,15 +18,15 @@ public class UpdateRecipeValidator : AbstractValidator<UpdateRecipeCommand>
         RuleFor(x => x.Recipe.Name)
             .NotEmpty()
             .When(x => x.Recipe.Name is not null)
-            .WithMessage("Recipe name is required");
+            .WithMessage("Name is required");
         RuleFor(x => x.Recipe.Ingredients)
             .NotEmpty()
             .When(x => x.Recipe.Ingredients is not null)
-            .WithMessage("Recipe ingredients are required");
+            .WithMessage("Ingredients are required");
         RuleFor(x => x.Recipe.Instructions)
             .NotEmpty()
             .When(x => x.Recipe.Instructions is not null)
-            .WithMessage("Recipe instructions are required");
+            .WithMessage("Instructions are required");
         When(x => x.Recipe.Ingredients?.Any() ?? false, () =>
         {
             RuleForEach(x => x.Recipe.Ingredients).SetValidator(new IngredientDtoValidator());
