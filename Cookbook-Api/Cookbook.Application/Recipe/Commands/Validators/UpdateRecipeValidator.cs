@@ -7,14 +7,14 @@ public class UpdateRecipeValidator : AbstractValidator<UpdateRecipeCommand>
 {
     public UpdateRecipeValidator(IRecipeRepository recipeRepository)
     {
-        RuleFor(x => x.Recipe.Id)
+        RuleFor(x => x.Id)
             .MustAsync(async (id, cancellationToken) =>
             {
                 var recipe = await recipeRepository.AnyById(id, cancellationToken);
                 return recipe;
             })
             .WithMessage("Recipe with id {PropertyValue} not found");
-        RuleFor(x => x.Recipe.Id).NotEmpty().WithMessage("Recipe id is required");
+        RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required");
         RuleFor(x => x.Recipe.Name)
             .NotEmpty()
             .When(x => x.Recipe.Name is not null)

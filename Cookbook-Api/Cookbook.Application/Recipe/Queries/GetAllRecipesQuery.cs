@@ -25,7 +25,7 @@ public class GetAllRecipesQueryHandler : IRequestHandler<GetAllRecipesQuery, Res
         try
         {
             var recipes = await _recipeRepository.GetAll(cancellationToken);
-            return Result<IEnumerable<RecipeDto>>.Success(recipes.Select(RecipeDtoExtensions.FromEntity));
+            return Result.Success(recipes.Select(RecipeExtensions.ToDto));
         }
         catch (Exception e)
         {

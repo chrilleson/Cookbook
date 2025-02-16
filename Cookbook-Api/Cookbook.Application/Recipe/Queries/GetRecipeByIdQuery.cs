@@ -26,8 +26,8 @@ public class GetRecipeByIdQueryHandler : IRequestHandler<GetRecipeByIdQuery, Res
         {
             var recipe = await _recipeRepository.GetById(request.Id, cancellationToken);
             return recipe is not null
-                ? Result.Success(recipe.FromEntity(), "Recipe found")
-                : Result<RecipeDto>.NotFound("Recipe not found");
+                ? Result.Success(recipe.ToDto(), "Recipe found")
+                : Result.NotFound("Recipe not found");
         }
         catch (Exception e)
         {

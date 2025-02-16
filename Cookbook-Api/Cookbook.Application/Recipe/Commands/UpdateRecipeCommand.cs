@@ -10,7 +10,7 @@ using Npgsql;
 
 namespace Cookbook.Application.Recipe.Commands;
 
-public record UpdateRecipeCommand(RecipeDto Recipe) : IRequest<Result>;
+public record UpdateRecipeCommand(int Id, UpdateRecipeDto Recipe) : IRequest<Result>;
 
 public class UpdateRecipeCommandHandler : IRequestHandler<UpdateRecipeCommand, Result>
 {
@@ -29,11 +29,10 @@ public class UpdateRecipeCommandHandler : IRequestHandler<UpdateRecipeCommand, R
     {
         try
         {
-            var existingRecipe = await _recipeRepository.GetById(request.Recipe.Id, cancellationToken);
+            var existingRecipe = await _recipeRepository.GetById(request.Id, cancellationToken);
             if (existingRecipe is null) return Result.NotFound();
 
             var updatedRecipe = existingRecipe.Update(request.Recipe);
-
             _recipeRepository.Update(updatedRecipe);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
