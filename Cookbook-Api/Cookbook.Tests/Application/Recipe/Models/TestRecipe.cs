@@ -11,8 +11,9 @@ internal static class TestRecipe
         string name = "My favourite recipe",
         string description = "This is my favourite recipe",
         IEnumerable<string>? instructions = null,
-        IEnumerable<IngredientDto>? ingredients = null) =>
-        new(id, name, description, instructions, ingredients);
+        IEnumerable<IngredientDto>? ingredients = null,
+        uint rowVersion = 1) =>
+        new(id, name, description, instructions, ingredients, rowVersion);
 
     internal static IngredientDto CreateIngredientDto(
         string name = "Beef",
@@ -20,13 +21,28 @@ internal static class TestRecipe
         Unit? unit = null) =>
         new(name, amount, unit ?? Unit.FromWeight(Weight.G));
 
+    internal static CreateRecipeDto CreateCreateRecipeDto(
+        string name = "My favourite recipe",
+        string description = "This is my favourite recipe",
+        IEnumerable<string>? instructions = null,
+        IEnumerable<IngredientDto>? ingredients = null) =>
+        new(name, description, instructions, ingredients);
+
+    internal static UpdateRecipeDto CreateUpdateRecipeDto(
+        string name = "My favourite recipe",
+        string description = "This is my favourite recipe",
+        IEnumerable<string>? instructions = null,
+        IEnumerable<IngredientDto>? ingredients = null) =>
+        new(name, description, instructions, ingredients);
+
     internal static Domain.Recipe.Recipe CreateRecipe(
         int id = 1,
         string name = "My favourite recipe",
         string description = "This is my favourite recipe",
         Dictionary<int, string>? instructions = null,
-        IEnumerable<Ingredient>? ingredients = null) =>
-        new(id, name, description, instructions, ingredients);
+        IEnumerable<Ingredient>? ingredients = null,
+        uint rowVersion = 1) =>
+        new() { Id = id, Name = name, Description = description, Instructions = instructions, Ingredients = ingredients, RowVersion = rowVersion };
 
     internal static Ingredient CreateIngredient(
         string name = "Beef",

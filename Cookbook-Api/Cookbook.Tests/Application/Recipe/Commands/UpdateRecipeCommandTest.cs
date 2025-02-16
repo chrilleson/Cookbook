@@ -15,9 +15,10 @@ public class UpdateRecipeCommandTest
     [Fact]
     public async Task UpdateRecipeCommand_RecipeDoesNotExist_ReturnsNotFound()
     {
-        var command = new UpdateRecipeCommand(TestRecipe.CreateRecipeDto());
+        const int id = 1;
+        var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
         var (sut, recipeRepository, _) = CreateSut();
-        recipeRepository.GetById(command.Recipe.Id, Arg.Any<CancellationToken>()).Returns((Domain.Recipe.Recipe?)null);
+        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns((Domain.Recipe.Recipe?)null);
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
@@ -27,26 +28,28 @@ public class UpdateRecipeCommandTest
     [Fact]
     public async Task UpdateRecipeCommand_RecipeIsUpdated_ReturnsSuccessWithMessage()
     {
-        var command = new UpdateRecipeCommand(TestRecipe.CreateRecipeDto());
+        const int id = 1;
+        var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
         var (sut, recipeRepository, unitOfWork) = CreateSut();
         var existingRecipe = TestRecipe.CreateRecipe();
-        recipeRepository.GetById(command.Recipe.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
         actual.Status.Should().Be(ResultStatus.Ok);
         actual.SuccessMessage.Should().Be("Recipe updated");
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Recipe.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task UpdateRecipeCommand_ThrowsException_ReturnsError()
     {
-        var command = new UpdateRecipeCommand(TestRecipe.CreateRecipeDto());
+        const int id = 1;
+        var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
         var (sut, recipeRepository, unitOfWork) = CreateSut();
         var existingRecipe = TestRecipe.CreateRecipe();
-        recipeRepository.GetById(command.Recipe.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
         unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new Exception());
 
         var actual = await sut.Handle(command, CancellationToken.None);
@@ -58,10 +61,11 @@ public class UpdateRecipeCommandTest
     [Fact]
     public async Task UpdateRecipeCommand_RecipeAlreadyExists_ReturnsConflict()
     {
-        var command = new UpdateRecipeCommand(TestRecipe.CreateRecipeDto());
+        const int id = 1;
+        var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
         var (sut, recipeRepository, unitOfWork) = CreateSut();
         var existingRecipe = TestRecipe.CreateRecipe();
-        recipeRepository.GetById(command.Recipe.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
         unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Error", new PostgresException(default, default, default, "23505", default)));
 
         var actual = await sut.Handle(command, CancellationToken.None);
@@ -70,16 +74,17 @@ public class UpdateRecipeCommandTest
         actual.IsConflict().Should().BeTrue();
         actual.Errors.Should().Contain("Recipe already exists");
         unitOfWork.Received(1).Rollback();
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Recipe.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
     }
 
     [Fact]
     public async Task UpdateRecipeCommand_ThrowsDbUpdateException_ReturnsError()
     {
-        var command = new UpdateRecipeCommand(TestRecipe.CreateRecipeDto());
+        const int id = 1;
+        var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
         var (sut, recipeRepository, unitOfWork) = CreateSut();
         var existingRecipe = TestRecipe.CreateRecipe();
-        recipeRepository.GetById(command.Recipe.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
         unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Error"));
 
         var actual = await sut.Handle(command, CancellationToken.None);
@@ -88,7 +93,7 @@ public class UpdateRecipeCommandTest
         actual.Errors.Should().Contain("Error");
         actual.IsError().Should().BeTrue();
         unitOfWork.Received(1).Rollback();
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Recipe.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
     }
 
     private static (UpdateRecipeCommandHandler, IRecipeRepository, IUnitOfWork) CreateSut()

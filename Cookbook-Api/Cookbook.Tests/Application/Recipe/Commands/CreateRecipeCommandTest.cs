@@ -17,14 +17,14 @@ public class CreateRecipeCommandTest
     [Fact]
     public async Task CreateRecipeCommand_RecipeIsCreated_ReturnsSuccessWithMessage()
     {
-        var command = new CreateRecipeCommand(TestRecipe.CreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
+        var command = new CreateRecipeCommand(TestRecipe.CreateCreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
         var (sut, recipeRepository, unitOfWork) = CreateSut();
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
         actual.Status.Should().Be(ResultStatus.Created);
         actual.Value.Name.Should().Be("My favourite recipe");
-        actual.Location.Should().Be("/api/recipes/1");
+        actual.Location.Should().Be("/api/recipes/0");
         await recipeRepository.Received(1).Add(Arg.Is<Domain.Recipe.Recipe>(x => x.Name == "My favourite recipe"), Arg.Any<CancellationToken>());
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -32,7 +32,7 @@ public class CreateRecipeCommandTest
     [Fact]
     public async Task CreateRecipeCommand_ThrowsException_ReturnsError()
     {
-        var command = new CreateRecipeCommand(TestRecipe.CreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
+        var command = new CreateRecipeCommand(TestRecipe.CreateCreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
         var (sut, recipeRepository, unitOfWork) = CreateSut();
         recipeRepository.Add(Arg.Any<Domain.Recipe.Recipe>(), Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new Exception("Test"));
 
@@ -48,7 +48,7 @@ public class CreateRecipeCommandTest
     [Fact]
     public async Task CreateRecipeCommand_RecipeAlreadyExists_ReturnsConflict()
     {
-        var command = new CreateRecipeCommand(TestRecipe.CreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
+        var command = new CreateRecipeCommand(TestRecipe.CreateCreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
         var (sut, recipeRepository, unitOfWork) = CreateSut();
         unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Test", new PostgresException(default, default, default, "23505", default)));
 
@@ -65,7 +65,7 @@ public class CreateRecipeCommandTest
     [Fact]
     public async Task CreateRecipeCommand_ThrowsDbUpdateException_ReturnsError()
     {
-        var command = new CreateRecipeCommand(TestRecipe.CreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
+        var command = new CreateRecipeCommand(TestRecipe.CreateCreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
         var (sut, _, unitOfWork) = CreateSut();
         unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Test"));
 
