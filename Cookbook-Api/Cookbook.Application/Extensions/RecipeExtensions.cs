@@ -5,28 +5,42 @@ namespace Cookbook.Application.Extensions;
 
 public static class RecipeExtensions
 {
-    public static Domain.Recipe.Recipe ToEntity(this RecipeDto dto)
+    public static RecipeDto ToDto(this Domain.Recipe.Recipe recipe)
     {
-        var instructions = dto.Instructions!
-            .Select((instruction, index) => (index, instruction))
-            .ToDictionary(x => x.index, x => x.instruction);
-        var ingredients = dto.Ingredients!
-            .Select(ingredient => new Ingredient(ingredient.Name, ingredient.Amount, ingredient.Unit.Fluid, ingredient.Unit.Weight, ingredient.Unit.Piece))
+        var instructions = recipe.Instructions
+            .Select(instruction => instruction.Value)
             .ToList();
 
-        return new Domain.Recipe.Recipe(dto.Id, dto.Name!, dto.Description!, instructions, ingredients);
+        var ingredients = recipe.Ingredients
+            .Select(ingredient => new IngredientDto(ingredient.Name, ingredient.Amount, new Unit(Fluid: ingredient.Fluid, Weight: ingredient.Weight, Piece: ingredient.Piece)))
+            .ToList();
+
+        return new RecipeDto(recipe.Id, recipe.Name, recipe.Description, instructions, ingredients, recipe.RowVersion);
     }
 
-    public static Domain.Recipe.Recipe Update(this Domain.Recipe.Recipe recipe, RecipeDto dto)
+    public static Domain.Recipe.Recipe Update(this Domain.Recipe.Recipe recipe, UpdateRecipeDto dto)
     {
         recipe.Name = dto.Name ?? recipe.Name;
         recipe.Description = dto.Description ?? recipe.Description;
-        recipe.Instructions = dto.Instructions?
-            .Select((instruction, index) => (index, instruction))
-            .ToDictionary(x => x.index, x => x.instruction) ?? recipe.Instructions;
-        recipe.Ingredients = dto.Ingredients?
-            .Select(ingredient => new Ingredient(ingredient.Name, ingredient.Amount, ingredient.Unit.Fluid, ingredient.Unit.Weight, ingredient.Unit.Piece))
-            .ToList() ?? recipe.Ingredients;
+
+        if (dto.Instructions is not null)
+        {
+            recipe.Instructions = dto.Instructions
+                .Select((instruction, index) => (index, instruction))
+                .ToDictionary(x => x.index, x => x.instruction);
+        }
+
+        if (dto.Ingredients is not null)
+        {
+            recipe.Ingredients = dto.Ingredients
+                .Select(ingredient => new Ingredient(
+                    ingredient.Name,
+                    ingredient.Amount,
+                    ingredient.Unit.Fluid,
+                    ingredient.Unit.Weight,
+                    ingredient.Unit.Piece))
+                .ToList();
+        }
 
         return recipe;
     }

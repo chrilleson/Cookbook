@@ -29,7 +29,6 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .HasColumnType("jsonb");
 
         builder.Property(r => r.RowVersion)
-            .IsRowVersion()
-            .ValueGeneratedOnAddOrUpdate();
+            .IsRowVersion();
     }
 }

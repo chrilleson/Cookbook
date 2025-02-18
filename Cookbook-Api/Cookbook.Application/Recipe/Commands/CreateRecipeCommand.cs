@@ -7,11 +7,10 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using Unit = MediatR.Unit;
 
 namespace Cookbook.Application.Recipe.Commands;
 
-public record CreateRecipeCommand(RecipeDto Recipe) : IRequest<Result<RecipeDto>>;
+public record CreateRecipeCommand(CreateRecipeDto Recipe) : IRequest<Result<RecipeDto>>;
 
 public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, Result<RecipeDto>>
 {
@@ -34,7 +33,7 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, R
             await _recipeRepository.Add(recipe, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Created(recipe.FromEntity(), RecipeRoutes.FormatRoute(RecipeRoutes.GetRecipe, recipe.Id));
+            return Result.Created(recipe.ToDto(), RecipeRoutes.FormatRoute(RecipeRoutes.GetRecipe, recipe.Id));
         }
         catch (DbUpdateException e) when (e.InnerException is PostgresException { SqlState: "23505" })
         {
