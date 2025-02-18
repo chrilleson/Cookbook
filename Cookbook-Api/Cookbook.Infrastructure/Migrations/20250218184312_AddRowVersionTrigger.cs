@@ -26,10 +26,18 @@ public partial class AddRowVersionTrigger : Migration
             $$ LANGUAGE plpgsql;
         ");
 
-        // Create trigger that uses the function
+        // Create trigger that uses the function for updates
         migrationBuilder.Sql(@"
             CREATE TRIGGER update_recipes_row_version
             BEFORE UPDATE ON ""Recipes""
+            FOR EACH ROW
+            EXECUTE FUNCTION update_row_version();
+        ");
+
+        // Create trigger that uses the function for inserts
+        migrationBuilder.Sql(@"
+            CREATE TRIGGER insert_recipes_row_version
+            BEFORE INSERT ON ""Recipes""
             FOR EACH ROW
             EXECUTE FUNCTION update_row_version();
         ");
@@ -45,6 +53,7 @@ public partial class AddRowVersionTrigger : Migration
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.Sql("DROP TRIGGER IF EXISTS update_recipes_row_version ON \"Recipes\";");
+        migrationBuilder.Sql("DROP TRIGGER IF EXISTS insert_recipes_row_version ON \"Recipes\";");
         migrationBuilder.Sql("DROP FUNCTION IF EXISTS update_row_version();");
         migrationBuilder.Sql("DROP EXTENSION IF EXISTS pgcrypto;");
     }
