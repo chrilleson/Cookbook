@@ -63,7 +63,8 @@ public class RecipeEndpoint : IEndpoint
         group.MapDelete("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) =>
             {
                 var result = await new Result()
-                    .BindAsync(_ => mediator.Send(new RemoveRecipeCommand(id), cancellationToken));
+                    .Map(() => new RemoveRecipeCommand(id))
+                    .BindAsync(x => mediator.Send(x, cancellationToken));
 
                 return result switch
                 {
