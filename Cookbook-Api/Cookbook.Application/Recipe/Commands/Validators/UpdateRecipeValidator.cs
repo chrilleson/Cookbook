@@ -34,5 +34,8 @@ public class UpdateRecipeValidator : AbstractValidator<UpdateRecipeCommand>
                 .Must(x => x.Distinct().Count() == x.Count())
                 .WithMessage("Ingredient names must be unique");
         });
+        RuleFor(x => x.Recipe.RowVersion)
+            .NotEmpty()
+            .WithMessage("Row version is required");
     }
 }

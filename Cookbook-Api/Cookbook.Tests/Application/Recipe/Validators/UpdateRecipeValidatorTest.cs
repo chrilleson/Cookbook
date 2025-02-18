@@ -18,7 +18,8 @@ public class UpdateRecipeValidatorTest
         var recipe = TestRecipe.CreateUpdateRecipeDto(
             name: "My favourite recipe",
             instructions: ["Do this", "Do that"],
-            ingredients: ingredients);
+            ingredients: ingredients,
+            rowVersion: [0]);
         var (sut, recipeRepository) = CreateSut();
         recipeRepository.AnyById(Arg.Any<int>(), CancellationToken.None).ReturnsForAnyArgs(true);
 

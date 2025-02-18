@@ -7,4 +7,4 @@ public record RecipeDto(
     string Description,
     IEnumerable<string> Instructions,
     IEnumerable<IngredientDto> Ingredients,
-    uint RowVersion);
+    byte[] RowVersion);

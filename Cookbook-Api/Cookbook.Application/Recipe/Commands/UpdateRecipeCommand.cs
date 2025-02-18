@@ -33,10 +33,26 @@ public class UpdateRecipeCommandHandler : IRequestHandler<UpdateRecipeCommand, R
             if (existingRecipe is null) return Result.NotFound();
 
             var updatedRecipe = existingRecipe.Update(request.Recipe);
+            updatedRecipe.RowVersion = request.Recipe.RowVersion;
+
             _recipeRepository.Update(updatedRecipe);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.SuccessWithMessage("Recipe updated");
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            _unitOfWork.Rollback();
+            _logger.LogError(ex, "Concurrency conflict while updating recipe {RecipeId}", request.Id);
+
+            // Get the current database values
+            var entry = ex.Entries.Single();
+            var databaseValues = await entry.GetDatabaseValuesAsync(cancellationToken);
+
+            return Result.Error(databaseValues is null
+                ? "The recipe has been deleted by another user."
+                : "The recipe was modified by another user. Please refresh and try again."
+            );
         }
         catch (DbUpdateException e) when (e.InnerException is PostgresException { SqlState: "23505" })
         {
