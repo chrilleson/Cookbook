@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +18,13 @@ public static class PersistenceExtensions
         });
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        return builder;
+    }
+
+    public static WebApplicationBuilder AddRedisOutputCache(this WebApplicationBuilder builder)
+    {
+        builder.AddRedisOutputCache(connectionName: "redis");
 
         return builder;
     }

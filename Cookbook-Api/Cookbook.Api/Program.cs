@@ -10,7 +10,8 @@ builder.Host.UseSerilog();
 
 builder.AddServiceDefaults();
 builder
-    .AddPersistence();
+    .AddPersistence()
+    .AddRedisOutputCache();
 
 // Add services to the container.
 builder.Services
@@ -33,6 +34,7 @@ app.UseRouting();
 app.UseCors(builder.Configuration.GetValue<string>("AllowedOrigin")!);
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseOutputCache();
 
 app.UseHealthChecks("/health");
 

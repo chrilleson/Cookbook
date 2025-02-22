@@ -6,6 +6,7 @@ using Cookbook.Application.Recipe.Models;
 using Cookbook.Application.Recipe.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Cookbook.Api.Endpoints.Recipe;
 
@@ -27,6 +28,7 @@ public class RecipeEndpoint : IEndpoint
 
                 return result.ToMinimalApiResult();
             })
+            .CacheOutput()
             .Produces<IEnumerable<RecipeDto>>();
 
         group.MapGet("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) =>
@@ -41,6 +43,7 @@ public class RecipeEndpoint : IEndpoint
                     _ => result.ToMinimalApiResult(),
                 };
             })
+            .CacheOutput()
             .Produces<RecipeDto>()
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesValidationProblem();
