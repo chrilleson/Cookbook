@@ -21,6 +21,9 @@ builder.Services
 
 var app = builder.Build();
 
+// Apply migrations on startup
+await app.ApplyMigrations();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
 {

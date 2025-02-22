@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,5 +27,15 @@ public static class PersistenceExtensions
         builder.AddRedisOutputCache(connectionName: "redis");
 
         return builder;
+    }
+
+    public static async Task ApplyMigrations(this IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        if (!(await dbContext.Database.GetPendingMigrationsAsync()).Any()) return;
+
+        await dbContext.Database.MigrateAsync();
     }
 }
