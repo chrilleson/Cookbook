@@ -2,16 +2,18 @@ using Cookbook.Api.Extensions;
 using Cookbook.Api.Middlewares;
 using Cookbook.Application;
 using Cookbook.Infrastructure.Persistence;
-using Cookbook.Repositories;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
+builder.AddServiceDefaults();
+builder
+    .AddPersistence();
+
 // Add services to the container.
 builder.Services
-    .AddPersistence(builder.Configuration.GetValue<string>("ConnectionStrings:Postgres"))
     .AddRepositories()
     .AddApplication()
     .AddApi();

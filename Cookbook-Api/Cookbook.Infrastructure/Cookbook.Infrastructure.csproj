@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <ItemGroup>
+      <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
         <PrivateAssets>all</PrivateAssets>
@@ -19,4 +20,5 @@
         <ProjectReference Include="..\Cookbook.Common\Cookbook.Common.csproj" />
         <ProjectReference Include="..\Cookbook.Domain\Cookbook.Domain.csproj" />
     </ItemGroup>
+
 </Project>
