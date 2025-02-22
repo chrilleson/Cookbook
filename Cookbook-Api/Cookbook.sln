@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cookbook.Repositories", "Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cookbook.Tests", "Cookbook.Tests\Cookbook.Tests.csproj", "{E5555748-C077-4164-A69A-3D797244CBC5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cookbook.AppHost", "Cookbook.AppHost\Cookbook.AppHost.csproj", "{4A7A7A3F-36C9-44AD-A388-34D1ED7197C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cookbook.ServiceDefaults", "Cookbook.ServiceDefaults\Cookbook.ServiceDefaults.csproj", "{1CE04216-3E28-48E7-BC12-0D6144088A4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +52,13 @@ Global
 		{E5555748-C077-4164-A69A-3D797244CBC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5555748-C077-4164-A69A-3D797244CBC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5555748-C077-4164-A69A-3D797244CBC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A7A7A3F-36C9-44AD-A388-34D1ED7197C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A7A7A3F-36C9-44AD-A388-34D1ED7197C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A7A7A3F-36C9-44AD-A388-34D1ED7197C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A7A7A3F-36C9-44AD-A388-34D1ED7197C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CE04216-3E28-48E7-BC12-0D6144088A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CE04216-3E28-48E7-BC12-0D6144088A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CE04216-3E28-48E7-BC12-0D6144088A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CE04216-3E28-48E7-BC12-0D6144088A4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
