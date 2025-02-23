@@ -1,27 +1,41 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Cookbook.Infrastructure.Persistence;
 
 public static class PersistenceExtensions
 {
-    public static IServiceCollection AddPersistence(this IServiceCollection services, string connectionString)
+    public static WebApplicationBuilder AddPersistence(this WebApplicationBuilder builder)
     {
-        services.AddDbContext<AppDbContext>(builder => builder.ConfigureDbContext(connectionString));
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.AddNpgsqlDbContext<AppDbContext>(connectionName: "postgres", configureDbContextOptions: options =>
+        {
+            options.ConfigureWarnings(x => x.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            options.UseNpgsql(opt => opt.ConfigureDataSource(x => x.EnableDynamicJson()));
+        });
 
-        return services;
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        return builder;
     }
-    private static void ConfigureDbContext(this DbContextOptionsBuilder builder, string connectionString) =>
-         builder
-             .UseNpgsql(connectionString, options =>
-             {
-                 options.ConfigureDataSource(dataSourceOptions =>
-                 {
-                     dataSourceOptions.EnableDynamicJson();
-                 });
-             })
-             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-             .ConfigureWarnings(x => x.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
+
+    public static WebApplicationBuilder AddRedisOutputCache(this WebApplicationBuilder builder)
+    {
+        builder.AddRedisOutputCache(connectionName: "redis");
+
+        return builder;
+    }
+
+    public static async Task ApplyMigrations(this IApplicationBuilder app)
+    {
+        using var scope = app.ApplicationServices.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        if (!(await dbContext.Database.GetPendingMigrationsAsync()).Any()) return;
+
+        await dbContext.Database.MigrateAsync();
+    }
 }

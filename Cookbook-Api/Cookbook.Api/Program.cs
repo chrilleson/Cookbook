@@ -2,21 +2,27 @@ using Cookbook.Api.Extensions;
 using Cookbook.Api.Middlewares;
 using Cookbook.Application;
 using Cookbook.Infrastructure.Persistence;
-using Cookbook.Repositories;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
 
+builder.AddServiceDefaults();
+builder
+    .AddPersistence()
+    .AddRedisOutputCache();
+
 // Add services to the container.
 builder.Services
-    .AddPersistence(builder.Configuration.GetValue<string>("ConnectionStrings:Postgres"))
     .AddRepositories()
     .AddApplication()
     .AddApi();
 
 var app = builder.Build();
+
+// Apply migrations on startup
+await app.ApplyMigrations();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
@@ -31,6 +37,7 @@ app.UseRouting();
 app.UseCors(builder.Configuration.GetValue<string>("AllowedOrigin")!);
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseOutputCache();
 
 app.UseHealthChecks("/health");
 
