@@ -20,8 +20,7 @@ public class UpdateRecipeValidatorTest
             instructions: ["Do this", "Do that"],
             ingredients: ingredients,
             rowVersion: [0]);
-        var (sut, recipeRepository) = CreateSut();
-        recipeRepository.AnyById(Arg.Any<int>(), CancellationToken.None).ReturnsForAnyArgs(true);
+        var sut = CreateSut();
 
         var actual = await sut.TestValidateAsync(new UpdateRecipeCommand(id, recipe));
 
@@ -32,8 +31,7 @@ public class UpdateRecipeValidatorTest
     [MemberData(nameof(InvalidData))]
     public async Task CommandIsInvalid_ShouldHaveErrors(int id, UpdateRecipeDto recipe, string property, string errorMessage)
     {
-        var (sut, recipeRepository) = CreateSut();
-        recipeRepository.AnyById(Arg.Any<int>(), CancellationToken.None).ReturnsForAnyArgs(id == 1);
+        var sut = CreateSut();
 
         var actual = await sut.TestValidateAsync(new UpdateRecipeCommand(id, recipe));
 
@@ -42,7 +40,7 @@ public class UpdateRecipeValidatorTest
 
     public static TheoryData<int, UpdateRecipeDto, string, string> InvalidData = new()
     {
-        { 0, TestRecipe.CreateUpdateRecipeDto(name: "", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto()]), "Id", "Recipe with id 0 not found" },
+        { 0, TestRecipe.CreateUpdateRecipeDto(name: "", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto()]), "Id", "Id is required" },
         { 1, TestRecipe.CreateUpdateRecipeDto(name: "", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto()]), "Recipe.Name", "Name is required" },
         { 1, TestRecipe.CreateUpdateRecipeDto(name: "My favourite recipe", instructions: Array.Empty<string>(), ingredients: [TestRecipe.CreateIngredientDto()]), "Recipe.Instructions", "Instructions are required" },
         { 1, TestRecipe.CreateUpdateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: Array.Empty<IngredientDto>()), "Recipe.Ingredients", "Ingredients are required" },
@@ -55,11 +53,6 @@ public class UpdateRecipeValidatorTest
         { 1, TestRecipe.CreateUpdateRecipeDto(name: "My favourite recipe", instructions: ["Do this", "Do that"], ingredients: [TestRecipe.CreateIngredientDto(name: "Beef", amount: 500, unit: Unit.FromPiece((Piece)999))]), "Recipe.Ingredients[0].Unit.Piece", "Piece unit is invalid" },
     };
 
-    private static (UpdateRecipeValidator, IRecipeRepository) CreateSut()
-    {
-        var recipeRepository = Substitute.For<IRecipeRepository>();
-        var sut = new UpdateRecipeValidator(recipeRepository);
-
-        return (sut, recipeRepository);
-    }
+    private static UpdateRecipeValidator CreateSut() =>
+        new();
 }
