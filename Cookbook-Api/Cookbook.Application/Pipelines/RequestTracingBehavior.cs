@@ -23,7 +23,6 @@ public class RequestTracingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
         {
             AddRequestTags(activity, request);
             var response = await next();
-            AddResponseTags(activity, response);
 
             return response;
         }
@@ -51,33 +50,6 @@ public class RequestTracingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
             if (request?.GetType().GetProperty(propertyName)?.GetValue(request) is { } value)
             {
                 activity.SetTag($"request.{propertyName.ToLower()}", value);
-            }
-        }
-    }
-
-    private static void AddResponseTags(Activity? activity, TResponse response)
-    {
-        if (activity == null || response == null) return;
-
-        if (response is not IResult result) return;
-
-        activity.SetTag("response.status", result.Status.ToString());
-
-        if (result.IsOk())
-        {
-            activity.SetStatus(ActivityStatusCode.Ok);
-        }
-        else
-        {
-            activity.SetStatus(ActivityStatusCode.Error,
-                result.Errors?.FirstOrDefault() ?? "Operation failed");
-
-            if (result.Errors == null) return;
-
-            foreach (var error in result.Errors)
-            {
-                activity.AddEvent(new ActivityEvent("Error",
-                    tags: new ActivityTagsCollection { { "error.message", error } }));
             }
         }
     }
