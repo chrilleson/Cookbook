@@ -5,15 +5,18 @@ var postgres = builder.AddPostgres("postgres")
     .WithEnvironment("PGDATA", "/var/lib/postgresql/data/pgdata")
     .WithDataBindMount(source: "../../data/postgres")
     .WithEndpoint(name: "postgres", port: 54320, targetPort: 5432, isExternal: true)
-    .AddDatabase("cookbook");
+    .WithLifetime(ContainerLifetime.Session);
+
+var cookbookDb = postgres.AddDatabase("cookbook");
 
 var redis = builder.AddRedis("redis")
     .WithRedisCommander()
-    .WithDataBindMount(source: "../../data/redis");
+    .WithDataBindMount(source: "../../data/redis")
+    .WithLifetime(ContainerLifetime.Session);
 
 var api = builder.AddProject<Projects.Cookbook_Api>("api")
-    .WaitFor(postgres)
-    .WithReference(postgres)
+    .WaitFor(cookbookDb)
+    .WithReference(cookbookDb)
     .WithReference(redis);
 
 await builder.Build().RunAsync();
