@@ -16,7 +16,9 @@ public static class ApplicationExtensions
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(TargetAssembly);
+            cfg.AddOpenBehavior(typeof(RequestTracingBehavior<,>));
             cfg.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
+            cfg.AddOpenBehavior(typeof(HandlerTracingBehavior<,>));
         });
         services.AddValidatorsFromAssembly(TargetAssembly);
 

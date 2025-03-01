@@ -1,14 +1,17 @@
-﻿using Ardalis.Result;
+﻿using System.Diagnostics;
+using Ardalis.Result;
 using Ardalis.Result.FluentValidation;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using OpenTelemetry.Trace;
 
 namespace Cookbook.Application.Pipelines;
 
 internal sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
+    private static readonly ActivitySource ActivitySource = new("Cookbook.Application");
 
     public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators)
     {
@@ -17,16 +20,51 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelin
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        var (resultErrors, failures) = await ValidateAsync(request, cancellationToken);
+        var requestName = typeof(TRequest).Name;
+        using var activity = ActivitySource.StartActivity($"Validate {requestName}");
 
-        if (resultErrors is { Count: 0 } && failures is { Count: 0 }) return await next();
-
-        return typeof(TResponse) switch
+        activity?.SetStartTime(DateTime.UtcNow);
+        try
         {
-            { IsGenericType: true } when typeof(TResponse).GetGenericTypeDefinition() == typeof(Result<>) => GetGenericResult(resultErrors),
-            { IsGenericType: false } when typeof(TResponse) == typeof(Result) => (TResponse)(object)Result.Invalid(resultErrors),
-            _ => throw new ValidationException(failures)
-        };
+            var (resultErrors, failures) = await ValidateAsync(request, cancellationToken);
+
+            activity?.SetEndTime(DateTime.UtcNow);
+            activity?.SetTag("validation.error_count", resultErrors.Count);
+            activity?.SetTag("validation.failure_count", failures.Count);
+
+            if (resultErrors is { Count: 0 } && failures is { Count: 0 })
+            {
+                activity?.SetTag("validation.status", "success");
+                activity?.SetStatus(ActivityStatusCode.Ok);
+                return await next();
+            }
+
+            foreach (var error in resultErrors)
+            {
+                activity?.AddEvent(new ActivityEvent("ValidationError",
+                    tags: new ActivityTagsCollection {
+                        { "error.property", error.Identifier },
+                        { "error.message", error.ErrorMessage }
+                    }));
+            }
+
+            activity?.SetTag("validation.status", "failed");
+            activity?.SetStatus(ActivityStatusCode.Error, "Validation failed");
+
+            return typeof(TResponse) switch
+            {
+                { IsGenericType: true } when typeof(TResponse).GetGenericTypeDefinition() == typeof(Result<>) => GetGenericResult(resultErrors),
+                { IsGenericType: false } when typeof(TResponse) == typeof(Result) => (TResponse)(object)Result.Invalid(resultErrors),
+                _ => throw new ValidationException(failures)
+            };
+        }
+        catch (Exception ex)
+        {
+            activity?.SetEndTime(DateTime.UtcNow);
+            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
+            activity?.RecordException(ex);
+            throw;
+        }
     }
 
     private async Task<(List<ValidationError> resultErrors, List<ValidationFailure> failures)> ValidateAsync(TRequest request, CancellationToken cancellationToken)
