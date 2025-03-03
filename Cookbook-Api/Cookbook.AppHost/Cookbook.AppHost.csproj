@@ -5,6 +5,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <IsAspireHost>true</IsAspireHost>
+        <ContainerRuntimeIdentifier>podman</ContainerRuntimeIdentifier>
     </PropertyGroup>
 
     <ItemGroup>
