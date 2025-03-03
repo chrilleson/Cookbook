@@ -30,7 +30,17 @@ public class HandlerTracingBehavior <TRequest, TResponse> : IPipelineBehavior<TR
             if (response is not IResult result) return response;
 
             activity?.SetTag("handler.status", result.Status.ToString());
-            activity?.SetStatus(result.IsOk() ? ActivityStatusCode.Ok : ActivityStatusCode.Error);
+            var activityStatus = result switch
+            {
+                _ when result.IsOk() => ActivityStatusCode.Ok,
+                _ when result.IsCreated() => ActivityStatusCode.Ok,
+                _ when result.IsNoContent() => ActivityStatusCode.Ok,
+                _ when result.IsError() => ActivityStatusCode.Error,
+                _ when result.IsConflict() => ActivityStatusCode.Error,
+                _ => ActivityStatusCode.Unset
+            };
+
+            activity?.SetStatus(activityStatus);
 
             if (result.IsOk() || result.Errors == null) return response;
 
