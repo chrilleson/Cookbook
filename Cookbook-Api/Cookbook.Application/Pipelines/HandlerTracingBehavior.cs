@@ -57,7 +57,7 @@ public class HandlerTracingBehavior <TRequest, TResponse> : IPipelineBehavior<TR
             activity?.SetEndTime(DateTime.UtcNow);
             activity?.SetTag("handler.status", "error");
             activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
-            activity?.RecordException(ex);
+            activity?.AddException(ex);
             throw;
         }
     }

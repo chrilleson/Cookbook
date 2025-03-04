@@ -30,7 +30,7 @@ public class RequestTracingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
         {
             activity?.SetEndTime(DateTime.UtcNow);
             activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
-            activity?.RecordException(ex);
+            activity?.AddException(ex);
             throw;
         }
     }

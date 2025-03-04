@@ -62,7 +62,7 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelin
         {
             activity?.SetEndTime(DateTime.UtcNow);
             activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
-            activity?.RecordException(ex);
+            activity?.AddException(ex);
             throw;
         }
     }
