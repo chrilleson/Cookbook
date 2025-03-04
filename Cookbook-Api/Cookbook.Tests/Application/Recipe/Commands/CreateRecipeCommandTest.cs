@@ -22,9 +22,9 @@ public class CreateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Created);
-        actual.Value.Name.Should().Be("My favourite recipe");
-        actual.Location.Should().Be("/api/recipes/0");
+        actual.Status.ShouldBe(ResultStatus.Created);
+        actual.Value.Name.ShouldBe("My favourite recipe");
+        actual.Location.ShouldBe("/api/recipes/0");
         await recipeRepository.Received(1).Add(Arg.Is<Domain.Recipe.Recipe>(x => x.Name == "My favourite recipe"), Arg.Any<CancellationToken>());
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -38,10 +38,10 @@ public class CreateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.Errors.Should().HaveCount(1);
-        actual.Errors.First().Should().Be("Test");
-        actual.IsError().Should().BeTrue();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.Errors.Count().ShouldBe(1);
+        actual.Errors.First().ShouldBe("Test");
+        actual.IsError().ShouldBeTrue();
         unitOfWork.Received(1).Rollback();
     }
 
@@ -54,10 +54,10 @@ public class CreateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Conflict);
-        actual.Errors.Should().HaveCount(1);
-        actual.Errors.First().Should().Be("Recipe already exists");
-        actual.IsConflict().Should().BeTrue();
+        actual.Status.ShouldBe(ResultStatus.Conflict);
+        actual.Errors.Count().ShouldBe(1);
+        actual.Errors.First().ShouldBe("Recipe already exists");
+        actual.IsConflict().ShouldBeTrue();
         await recipeRepository.Received(1).Add(Arg.Is<Domain.Recipe.Recipe>(r => r.Name == "My favourite recipe"), Arg.Any<CancellationToken>());
         unitOfWork.Received(1).Rollback();
     }
@@ -71,10 +71,10 @@ public class CreateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.Errors.Should().HaveCount(1);
-        actual.Errors.First().Should().Be("Test");
-        actual.IsError().Should().BeTrue();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.Errors.Count().ShouldBe(1);
+        actual.Errors.First().ShouldBe("Test");
+        actual.IsError().ShouldBeTrue();
         unitOfWork.Received(1).Rollback();
     }
 

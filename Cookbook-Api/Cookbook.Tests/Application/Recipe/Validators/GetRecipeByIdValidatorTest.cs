@@ -13,7 +13,7 @@ public class GetRecipeByIdValidatorTest
 
         var result = await sut.ValidateAsync(command, CancellationToken.None);
 
-        result.IsValid.Should().BeTrue();
+        result.IsValid.ShouldBeTrue();
     }
 
     [Fact]
@@ -24,9 +24,9 @@ public class GetRecipeByIdValidatorTest
 
         var result = await sut.ValidateAsync(command, CancellationToken.None);
 
-        result.IsValid.Should().BeFalse();
-        result.Errors.Should().HaveCount(1);
-        result.Errors[0].ErrorMessage.Should().Be("Id is required");
+        result.IsValid.ShouldBeFalse();
+        result.Errors.Count.ShouldBe(1);
+        result.Errors[0].ErrorMessage.ShouldBe("Id is required");
     }
 
     private static GetRecipeByIdValidator CreateSut() =>

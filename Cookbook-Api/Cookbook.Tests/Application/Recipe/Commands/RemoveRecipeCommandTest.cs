@@ -21,7 +21,7 @@ public class RemoveRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.NoContent);
+        actual.Status.ShouldBe(ResultStatus.NoContent);
         recipeRepository.Received(1).Remove(Arg.Is<Domain.Recipe.Recipe>(x => x.Name == "My favourite recipe"));
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -35,8 +35,8 @@ public class RemoveRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.NotFound);
-        actual.IsNotFound().Should().BeTrue();
+        actual.Status.ShouldBe(ResultStatus.NotFound);
+        actual.IsNotFound().ShouldBeTrue();
         recipeRepository.DidNotReceive().Remove(Arg.Any<Domain.Recipe.Recipe>());
         await unitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -50,10 +50,10 @@ public class RemoveRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.Errors.Should().HaveCount(1);
-        actual.Errors.First().Should().Be("Test");
-        actual.IsError().Should().BeTrue();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.Errors.Count().ShouldBe(1);
+        actual.Errors.First().ShouldBe("Test");
+        actual.IsError().ShouldBeTrue();
         unitOfWork.Received(1).Rollback();
     }
 
@@ -67,10 +67,10 @@ public class RemoveRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.Errors.Should().HaveCount(1);
-        actual.Errors.First().Should().Be("Test");
-        actual.IsError().Should().BeTrue();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.Errors.Count().ShouldBe(1);
+        actual.Errors.First().ShouldBe("Test");
+        actual.IsError().ShouldBeTrue();
         recipeRepository.Received(1).Remove(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == 1));
         unitOfWork.Received(1).Rollback();
     }
