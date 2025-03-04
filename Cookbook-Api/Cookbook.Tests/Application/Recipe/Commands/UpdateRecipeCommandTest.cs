@@ -69,7 +69,7 @@ public class UpdateRecipeCommandTest
         var (sut, recipeRepository, unitOfWork) = CreateSut();
         var existingRecipe = TestRecipe.CreateRecipe();
         recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
-        unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Error", new PostgresException(default, default, default, "23505", default)));
+        unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Error", new PostgresException(null!, null!, null!, "23505", null)));
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
@@ -167,7 +167,7 @@ internal class TestUpdateEntry : IUpdateEntry
     public IEntityType EntityType => throw new NotImplementedException();
     EntityState IUpdateEntry.EntityState { get; set; }
     public bool IsConceptualNull(IProperty property) => throw new NotImplementedException();
-    public DbContext Context { get; }
+    public DbContext Context { get; } = null!;
 }
 
 // Custom EntityEntry implementation
@@ -181,7 +181,7 @@ internal class TestEntityEntry : EntityEntry
         _databaseValues = databaseValues;
     }
 
-    public override async Task<PropertyValues?> GetDatabaseValuesAsync(CancellationToken cancellationToken = default) => _databaseValues;
+    public override Task<PropertyValues?> GetDatabaseValuesAsync(CancellationToken cancellationToken = default) => Task.FromResult(_databaseValues);
 }
 
 // Custom PropertyValues implementation
@@ -189,13 +189,14 @@ internal class TestPropertyValues : PropertyValues
 {
     public TestPropertyValues() : base(null!) { }
 
-    public override IReadOnlyList<IProperty> Properties { get; }
-    public override object this[string propertyName]
+    public override IReadOnlyList<IProperty> Properties { get; } = null!;
+
+    public override object? this[string propertyName]
     {
         get => throw new NotImplementedException();
         set => throw new NotImplementedException();
     }
-    public override object this[IProperty property]
+    public override object? this[IProperty property]
     {
         get => throw new NotImplementedException();
         set => throw new NotImplementedException();

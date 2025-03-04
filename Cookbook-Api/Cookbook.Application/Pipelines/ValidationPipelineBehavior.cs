@@ -88,10 +88,12 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelin
         var invalidMethod = typeof(Result<>)
             .MakeGenericType(resultType)
             .GetMethod(nameof(Result<int>.Invalid), [typeof(List<ValidationError>)]);
-        if (invalidMethod != null)
+
+        if (invalidMethod == null)
         {
-            return (TResponse)invalidMethod.Invoke(null, new object[] { resultErrors });
+            throw new InvalidOperationException("Invalid method not found");
         }
-        throw new InvalidOperationException("Invalid method not found");
+
+        return (TResponse)invalidMethod.Invoke(null, [resultErrors])!;
     }
 }

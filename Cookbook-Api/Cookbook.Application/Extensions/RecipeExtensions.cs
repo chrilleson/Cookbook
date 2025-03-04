@@ -15,7 +15,7 @@ public static class RecipeExtensions
             .Select(ingredient => new IngredientDto(ingredient.Name, ingredient.Amount, new Unit(Fluid: ingredient.Fluid, Weight: ingredient.Weight, Piece: ingredient.Piece)))
             .ToList();
 
-        return new RecipeDto(recipe.Id, recipe.Name, recipe.Description, instructions, ingredients, recipe.RowVersion);
+        return new RecipeDto(recipe.Id, recipe.Name, recipe.Description, instructions, ingredients, recipe.RowVersion ?? []);
     }
 
     public static Domain.Recipe.Recipe Update(this Domain.Recipe.Recipe recipe, UpdateRecipeDto dto)

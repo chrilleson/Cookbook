@@ -11,5 +11,5 @@ public sealed class Recipe
     public required IEnumerable<Ingredient> Ingredients { get; set; }
 
     [Timestamp]
-    public byte[] RowVersion { get; set; }
+    public byte[]? RowVersion { get; set; }
 }

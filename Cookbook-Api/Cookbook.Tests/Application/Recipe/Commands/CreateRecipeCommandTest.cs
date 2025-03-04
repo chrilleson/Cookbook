@@ -50,7 +50,7 @@ public class CreateRecipeCommandTest
     {
         var command = new CreateRecipeCommand(TestRecipe.CreateCreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
         var (sut, recipeRepository, unitOfWork) = CreateSut();
-        unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Test", new PostgresException(default, default, default, "23505", default)));
+        unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Test", new PostgresException(null!, null!, null!, "23505", null)));
 
         var actual = await sut.Handle(command, CancellationToken.None);
 

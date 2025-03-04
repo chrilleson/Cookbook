@@ -13,7 +13,7 @@ internal static class TestRecipe
         IEnumerable<string>? instructions = null,
         IEnumerable<IngredientDto>? ingredients = null,
         byte[]? rowVersion = null) =>
-        new(id, name, description, instructions, ingredients, rowVersion);
+        new(id, name, description, instructions!, ingredients!, rowVersion!);
 
     internal static IngredientDto CreateIngredientDto(
         string name = "Beef",
@@ -26,7 +26,7 @@ internal static class TestRecipe
         string description = "This is my favourite recipe",
         IEnumerable<string>? instructions = null,
         IEnumerable<IngredientDto>? ingredients = null) =>
-        new(name, description, instructions, ingredients);
+        new(name, description, instructions!, ingredients!);
 
     internal static UpdateRecipeDto CreateUpdateRecipeDto(
         string name = "My favourite recipe",
@@ -34,7 +34,7 @@ internal static class TestRecipe
         IEnumerable<string>? instructions = null,
         IEnumerable<IngredientDto>? ingredients = null,
         byte[]? rowVersion = null) =>
-        new(name, description, instructions, ingredients, rowVersion);
+        new(name, description, instructions, ingredients, rowVersion!);
 
     internal static Domain.Recipe.Recipe CreateRecipe(
         int id = 1,
@@ -43,7 +43,7 @@ internal static class TestRecipe
         Dictionary<int, string>? instructions = null,
         IEnumerable<Ingredient>? ingredients = null,
         byte[]? rowVersion = null) =>
-        new() { Id = id, Name = name, Description = description, Instructions = instructions, Ingredients = ingredients, RowVersion = rowVersion };
+        new() { Id = id, Name = name, Description = description, Instructions = instructions!, Ingredients = ingredients!, RowVersion = rowVersion! };
 
     internal static Ingredient CreateIngredient(
         string name = "Beef",

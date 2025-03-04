@@ -17,7 +17,7 @@ internal static class RecipeDtoExtensions
         return new Domain.Recipe.Recipe
         {
             Id = dto.Id,
-            Name = dto.Name!,
+            Name = dto.Name,
             Description = dto.Description!,
             Instructions = instructions,
             Ingredients = ingredients
@@ -33,6 +33,12 @@ internal static class RecipeDtoExtensions
             .Select(ingredient => new Ingredient(ingredient.Name, ingredient.Amount, ingredient.Unit.Fluid, ingredient.Unit.Weight, ingredient.Unit.Piece))
             .ToList();
 
-        return new Domain.Recipe.Recipe { Name = dto.Name, Description = dto.Description, Instructions = instructions, Ingredients = ingredients };
+        return new Domain.Recipe.Recipe
+        {
+            Name = dto.Name,
+            Description = dto.Description,
+            Instructions = instructions,
+            Ingredients = ingredients
+        };
     }
 }

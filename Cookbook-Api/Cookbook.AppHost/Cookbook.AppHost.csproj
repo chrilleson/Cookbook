@@ -16,7 +16,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Cookbook.Api\Cookbook.Api.csproj" />
-        <ProjectReference Include="..\Cookbook.ServiceDefaults\Cookbook.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\Cookbook.ServiceDefaults\Cookbook.ServiceDefaults.csproj" IsAspireProjectResource="false" />
     </ItemGroup>
 
 </Project>

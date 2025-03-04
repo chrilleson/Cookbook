@@ -18,8 +18,8 @@ runs:
     - name: Build
       shell: bash
       run: |
-        dotnet build './Cookbook-Api/Cookbook.Api/Cookbook.Api.csproj' --no-restore --output ${{ github.workspace }}/${{ inputs.output-directory }} --configuration Release
-        dotnet build './Cookbook-Api/Cookbook.Tests/Cookbook.Tests.csproj' --no-restore --output ${{ github.workspace }}/${{ inputs.output-directory }}
+        dotnet build './Cookbook-Api/Cookbook.Api/Cookbook.Api.csproj' --no-restore --warnaserror --output ${{ github.workspace }}/${{ inputs.output-directory }} --configuration Release
+        dotnet build './Cookbook-Api/Cookbook.Tests/Cookbook.Tests.csproj' --no-restore --warnaserror --output ${{ github.workspace }}/${{ inputs.output-directory }}
 
     - name: Cache build output
       uses: actions/cache@v4
