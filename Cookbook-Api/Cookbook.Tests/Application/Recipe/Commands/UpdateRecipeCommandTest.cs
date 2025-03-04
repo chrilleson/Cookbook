@@ -25,7 +25,7 @@ public class UpdateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.NotFound);
+        actual.Status.ShouldBe(ResultStatus.NotFound);
     }
 
     [Fact]
@@ -39,8 +39,8 @@ public class UpdateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Ok);
-        actual.SuccessMessage.Should().Be("Recipe updated");
+        actual.Status.ShouldBe(ResultStatus.Ok);
+        actual.SuccessMessage.ShouldBe("Recipe updated");
         recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -57,7 +57,7 @@ public class UpdateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Error);
+        actual.Status.ShouldBe(ResultStatus.Error);
         unitOfWork.Received(1).Rollback();
     }
 
@@ -73,9 +73,9 @@ public class UpdateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Conflict);
-        actual.IsConflict().Should().BeTrue();
-        actual.Errors.Should().Contain("Recipe already exists");
+        actual.Status.ShouldBe(ResultStatus.Conflict);
+        actual.IsConflict().ShouldBeTrue();
+        actual.Errors.ShouldContain("Recipe already exists");
         unitOfWork.Received(1).Rollback();
         recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
     }
@@ -92,16 +92,16 @@ public class UpdateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.Errors.Should().Contain("Error");
-        actual.IsError().Should().BeTrue();
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.Errors.ShouldContain("Error");
+        actual.IsError().ShouldBeTrue();
         unitOfWork.Received(1).Rollback();
         recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
     }
 
     [Theory]
-    [InlineData(true, "The recipe was modified by another user. Please refresh and try again.")] // Entity exists but was modified
-    [InlineData(false, "The recipe has been deleted by another user.")] // Entity was deleted
+    [InlineData(true, "The recipe was modified by another user. Please refresh and try again.")]
+    [InlineData(false, "The recipe has been deleted by another user.")]
     public async Task UpdateRecipeCommand_ThrowsDbConcurrencyException_ReturnsAppropriateError(bool entityExists, string expectedError)
     {
         var propertyValues = entityExists ? new TestPropertyValues() : null;
@@ -118,9 +118,9 @@ public class UpdateRecipeCommandTest
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
-        actual.Status.Should().Be(ResultStatus.Error);
-        actual.IsError().Should().BeTrue();
-        actual.Errors.Should().ContainEquivalentOf(expectedError);
+        actual.Status.ShouldBe(ResultStatus.Error);
+        actual.IsError().ShouldBeTrue();
+        actual.Errors.First().ShouldBe(expectedError);
         unitOfWork.Received(1).Rollback();
         recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
     }

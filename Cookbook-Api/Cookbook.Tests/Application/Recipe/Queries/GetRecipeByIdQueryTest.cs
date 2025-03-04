@@ -21,15 +21,15 @@ public class GetRecipeByIdQueryTest
 
         var actual = await sut.Handle(new GetRecipeByIdQuery(1), CancellationToken.None);
 
-        actual.IsSuccess.Should().BeTrue();
-        actual.SuccessMessage.Should().Be("Recipe found");
-        actual.Value.Name.Should().Be("My favourite recipe");
-        actual.Value.Instructions.Should().HaveCount(1);
-        actual.Value.Instructions.First().Should().Be("First Instruction");
-        actual.Value.Ingredients.Should().HaveCount(1);
-        actual.Value.Ingredients.First().Name.Should().Be("Beef");
-        actual.Value.Ingredients.First().Amount.Should().Be(500);
-        actual.Value.Ingredients.First().Unit.Should().Be(Unit.FromWeight(Weight.G));
+        actual.IsSuccess.ShouldBeTrue();
+        actual.SuccessMessage.ShouldBe("Recipe found");
+        actual.Value.Name.ShouldBe("My favourite recipe");
+        actual.Value.Instructions.Count().ShouldBe(1);
+        actual.Value.Instructions.First().ShouldBe("First Instruction");
+        actual.Value.Ingredients.Count().ShouldBe(1);
+        actual.Value.Ingredients.First().Name.ShouldBe("Beef");
+        actual.Value.Ingredients.First().Amount.ShouldBe(500);
+        actual.Value.Ingredients.First().Unit.ShouldBe(Unit.FromWeight(Weight.G));
     }
 
     [Fact]
@@ -40,9 +40,9 @@ public class GetRecipeByIdQueryTest
 
         var actual = await sut.Handle(new GetRecipeByIdQuery(1), CancellationToken.None);
 
-        actual.IsNotFound().Should().BeTrue();
-        actual.Errors.Should().HaveCount(1);
-        actual.Errors.First().Should().Be("Recipe not found");
+        actual.IsNotFound().ShouldBeTrue();
+        actual.Errors.Count().ShouldBe(1);
+        actual.Errors.First().ShouldBe("Recipe not found");
     }
 
     [Fact]
@@ -53,9 +53,9 @@ public class GetRecipeByIdQueryTest
 
         var actual = await sut.Handle(new GetRecipeByIdQuery(1), CancellationToken.None);
 
-        actual.IsError().Should().BeTrue();
-        actual.Errors.Should().HaveCount(1);
-        actual.Errors.First().Should().Be("Something went wrong while fetching recipe");
+        actual.IsError().ShouldBeTrue();
+        actual.Errors.Count().ShouldBe(1);
+        actual.Errors.First().ShouldBe("Something went wrong while fetching recipe");
     }
 
     private static (GetRecipeByIdQueryHandler, IRecipeRepository) CreateSut()

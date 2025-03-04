@@ -24,22 +24,22 @@ public class GetAllRecipesTest
 
         var actual = await sut.Handle(new GetAllRecipesQuery(), CancellationToken.None);
 
-        actual.IsSuccess.Should().BeTrue();
-        actual.Value.Should().HaveCount(2);
-        actual.Value.First().Name.Should().Be("My favourite recipe");
-        actual.Value.First().Instructions.Should().HaveCount(1);
-        actual.Value.First().Instructions.First().Should().Be("First Instruction");
-        actual.Value.First().Ingredients.Should().HaveCount(1);
-        actual.Value.First().Ingredients.First().Name.Should().Be("Beef");
-        actual.Value.First().Ingredients.First().Amount.Should().Be(500);
-        actual.Value.First().Ingredients.First().Unit.Should().Be(Unit.FromWeight(Weight.G));
-        actual.Value.Last().Name.Should().Be("Another recipe");
-        actual.Value.Last().Instructions.Should().HaveCount(1);
-        actual.Value.Last().Instructions.First().Should().Be("Pour the milk in the glass");
-        actual.Value.Last().Ingredients.Should().HaveCount(1);
-        actual.Value.Last().Ingredients.First().Name.Should().Be("Milk");
-        actual.Value.Last().Ingredients.First().Amount.Should().Be(2);
-        actual.Value.Last().Ingredients.First().Unit.Should().Be(Unit.FromFluid(Fluid.Dl));
+        actual.IsSuccess.ShouldBeTrue();
+        actual.Value.Count().ShouldBe(2);
+        actual.Value.First().Name.ShouldBe("My favourite recipe");
+        actual.Value.First().Instructions.Count().ShouldBe(1);
+        actual.Value.First().Instructions.First().ShouldBe("First Instruction");
+        actual.Value.First().Ingredients.Count().ShouldBe(1);
+        actual.Value.First().Ingredients.First().Name.ShouldBe("Beef");
+        actual.Value.First().Ingredients.First().Amount.ShouldBe(500);
+        actual.Value.First().Ingredients.First().Unit.ShouldBe(Unit.FromWeight(Weight.G));
+        actual.Value.Last().Name.ShouldBe("Another recipe");
+        actual.Value.Last().Instructions.Count().ShouldBe(1);
+        actual.Value.Last().Instructions.First().ShouldBe("Pour the milk in the glass");
+        actual.Value.Last().Ingredients.Count().ShouldBe(1);
+        actual.Value.Last().Ingredients.First().Name.ShouldBe("Milk");
+        actual.Value.Last().Ingredients.First().Amount.ShouldBe(2);
+        actual.Value.Last().Ingredients.First().Unit.ShouldBe(Unit.FromFluid(Fluid.Dl));
     }
 
     [Fact]
@@ -50,9 +50,9 @@ public class GetAllRecipesTest
 
         var actual = await sut.Handle(new GetAllRecipesQuery(), CancellationToken.None);
 
-        actual.IsError().Should().BeTrue();
-        actual.Errors.Should().HaveCount(1);
-        actual.Errors.First().Should().Be("Test");
+        actual.IsError().ShouldBeTrue();
+        actual.Errors.Count().ShouldBe(1);
+        actual.Errors.First().ShouldBe("Test");
     }
 
     private static (GetAllRecipesQueryHandler, IRecipeRepository) CreateSut()

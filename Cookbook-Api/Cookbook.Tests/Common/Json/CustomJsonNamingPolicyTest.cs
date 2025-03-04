@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using Cookbook.Common.Json;
-using FluentAssertions;
 
 namespace Cookbook.Tests.Common.Json;
 
@@ -13,7 +12,7 @@ public class CustomJsonNamingPolicyTest
 
         var actual = JsonSerializer.Serialize(obj, new JsonSerializerOptions{ PropertyNamingPolicy = new CustomJsonNamingPolicy() });
 
-        actual.Should().Be("""{"Normal":1,"AIBorjan":2,"InnehallerA":3,"FortsatterMedO":4,"gemenIBorjan":5}""");
+        actual.ShouldBe("""{"Normal":1,"AIBorjan":2,"InnehallerA":3,"FortsatterMedO":4,"gemenIBorjan":5}""");
     }
 
     private record CustomJsonObject(int Normal, int ÅIBörjan, int InnehållerÄ, int FortsätterMedÖ, int gemenIBörjan);
