@@ -49,7 +49,7 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelin
             }
 
             activity?.SetTag("validation.status", "failed");
-            activity?.SetStatus(ActivityStatusCode.Error, "Validation failed");
+            activity?.SetStatus(ActivityStatusCode.Error);
 
             return typeof(TResponse) switch
             {
