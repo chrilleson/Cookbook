@@ -1,0 +1,34 @@
+name: '[BUILD] Cookbook API'
+
+on:
+  workflow_dispatch:    
+  push:
+    branches:
+      - main
+    paths:
+      - Cookbook-Api/Cookbook.*/**
+
+jobs:
+  build_Test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.x
+
+      - name: Build
+        uses: ./.github/actions/build-cookbook-api
+        with:
+          output-directory: 'build-output'
+
+      - name: Test
+        uses: ./.github/actions/test-cookbook-api
+        with:
+          output-directory: 'build-output'

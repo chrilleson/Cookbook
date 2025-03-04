@@ -1,0 +1,28 @@
+name: 'Build Cookbook Api'
+description: 'GitHub Action to build the Cookbook Api project'
+
+inputs:
+  output-directory:
+    description: 'The directory where the build output will be stored'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Restore
+      shell: bash
+      run: |
+        dotnet restore './Cookbook-Api/Cookbook.Api/Cookbook.Api.csproj'
+        dotnet restore './Cookbook-Api/Cookbook.Tests/Cookbook.Tests.csproj'
+
+    - name: Build
+      shell: bash
+      run: |
+        dotnet build './Cookbook-Api/Cookbook.Api/Cookbook.Api.csproj' --no-restore --output ${{ github.workspace }}/${{ inputs.output-directory }} --configuration Release
+        dotnet build './Cookbook-Api/Cookbook.Tests/Cookbook.Tests.csproj' --no-restore --output ${{ github.workspace }}/${{ inputs.output-directory }}
+
+    - name: Cache build output
+      uses: actions/cache@v4
+      with:
+        key: ${{ runner.os }}-build-${{ github.sha }}
+        path: ${{ github.workspace }}/${{ inputs.output-directory }}
