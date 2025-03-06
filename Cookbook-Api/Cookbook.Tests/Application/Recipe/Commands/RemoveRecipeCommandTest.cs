@@ -1,7 +1,8 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Recipe.Commands;
+using Cookbook.Application.Repositories;
+using Cookbook.Application.UnitOfWork;
 using Cookbook.Infrastructure.Persistence;
-using Cookbook.Repositories;
 using Cookbook.Tests.Application.Recipe.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

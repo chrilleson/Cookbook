@@ -1,4 +1,4 @@
-﻿namespace Cookbook.Infrastructure.Persistence;
+﻿namespace Cookbook.Application.UnitOfWork;
 
 public interface IUnitOfWork
 {

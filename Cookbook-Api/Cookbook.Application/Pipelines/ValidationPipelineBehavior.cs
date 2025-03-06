@@ -4,7 +4,6 @@ using Ardalis.Result.FluentValidation;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using OpenTelemetry.Trace;
 
 namespace Cookbook.Application.Pipelines;
 

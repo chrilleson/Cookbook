@@ -2,7 +2,6 @@
 using Cookbook.Application.Recipe.Commands.Validators;
 using Cookbook.Application.Recipe.Models;
 using Cookbook.Domain.Units;
-using Cookbook.Repositories;
 using Cookbook.Tests.Application.Recipe.Models;
 using FluentValidation.TestHelper;
 

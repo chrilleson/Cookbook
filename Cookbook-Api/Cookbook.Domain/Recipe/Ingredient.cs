@@ -2,7 +2,7 @@
 
 namespace Cookbook.Domain.Recipe;
 
-public class Ingredient
+public sealed class Ingredient
 {
     public string Name { get; init; }
     public double Amount { get; init; }

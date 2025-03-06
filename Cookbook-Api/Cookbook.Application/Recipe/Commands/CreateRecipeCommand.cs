@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Extensions;
 using Cookbook.Application.Recipe.Models;
-using Cookbook.Infrastructure.Persistence;
-using Cookbook.Repositories;
+using Cookbook.Application.Repositories;
+using Cookbook.Application.UnitOfWork;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

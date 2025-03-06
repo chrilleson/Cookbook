@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Ardalis.Result;
 using MediatR;
-using OpenTelemetry.Trace;
 
 namespace Cookbook.Application.Pipelines;
 
