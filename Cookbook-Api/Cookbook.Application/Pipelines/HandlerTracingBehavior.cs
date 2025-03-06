@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Cookbook.Application.Pipelines;
 
-public class HandlerTracingBehavior <TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+public class HandlerTracingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private static readonly ActivitySource ActivitySource = new("Cookbook.Application");
 

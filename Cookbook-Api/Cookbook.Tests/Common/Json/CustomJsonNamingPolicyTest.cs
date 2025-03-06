@@ -10,7 +10,7 @@ public class CustomJsonNamingPolicyTest
     {
         var obj = new CustomJsonObject(1, 2, 3, 4, 5);
 
-        var actual = JsonSerializer.Serialize(obj, new JsonSerializerOptions{ PropertyNamingPolicy = new CustomJsonNamingPolicy() });
+        var actual = JsonSerializer.Serialize(obj, new JsonSerializerOptions { PropertyNamingPolicy = new CustomJsonNamingPolicy() });
 
         actual.ShouldBe("""{"Normal":1,"AIBorjan":2,"InnehallerA":3,"FortsatterMedO":4,"gemenIBorjan":5}""");
     }
