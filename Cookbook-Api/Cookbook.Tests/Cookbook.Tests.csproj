@@ -6,17 +6,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Shouldly" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="NetArchTest.Rules" />
         <PackageReference Include="NSubstitute" />
+        <PackageReference Include="Shouldly" />
         <PackageReference Include="xunit" />
         <PackageReference Include="xunit.runner.visualstudio" />        
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Cookbook.Api\Cookbook.Api.csproj" />
         <ProjectReference Include="..\Cookbook.Application\Cookbook.Application.csproj" />
         <ProjectReference Include="..\Cookbook.Common\Cookbook.Common.csproj" />
         <ProjectReference Include="..\Cookbook.Domain\Cookbook.Domain.csproj" />
-        <ProjectReference Include="..\Cookbook.Repositories\Cookbook.Repositories.csproj" />
+        <ProjectReference Include="..\Cookbook.Infrastructure\Cookbook.Infrastructure.csproj" />
     </ItemGroup>
 </Project>
