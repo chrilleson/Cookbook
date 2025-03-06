@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Recipe.Models;
 using Cookbook.Application.Recipe.Queries;
+using Cookbook.Application.Repositories;
 using Cookbook.Domain.Units;
-using Cookbook.Repositories;
 using Cookbook.Tests.Application.Recipe.Models;
 using Microsoft.Extensions.Logging;
 using NSubstitute.ExceptionExtensions;

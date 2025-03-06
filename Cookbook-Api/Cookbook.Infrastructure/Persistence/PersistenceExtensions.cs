@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Cookbook.Application.Repositories;
+using Cookbook.Application.UnitOfWork;
+using Cookbook.Infrastructure.Persistence.Repositories;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +30,13 @@ public static class PersistenceExtensions
         builder.AddRedisOutputCache(connectionName: "redis");
 
         return builder;
+    }
+
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IRecipeRepository, RecipeRepository>();
+
+        return services;
     }
 
     public static async Task ApplyMigrations(this IApplicationBuilder app)

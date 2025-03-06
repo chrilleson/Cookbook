@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
 using Cookbook.Application.Pipelines;
-using Cookbook.Application.Repositories;
-using Cookbook.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,13 +19,6 @@ public static class ApplicationExtensions
             cfg.AddOpenBehavior(typeof(HandlerTracingBehavior<,>));
         });
         services.AddValidatorsFromAssembly(TargetAssembly);
-
-        return services;
-    }
-
-    public static IServiceCollection AddRepositories(this IServiceCollection services)
-    {
-        services.AddScoped<IRecipeRepository, RecipeRepository>();
 
         return services;
     }

@@ -5,13 +5,13 @@
       <PackageReference Include="Ardalis.Result.FluentValidation" />
       <PackageReference Include="FluentValidation.AspNetCore" />
       <PackageReference Include="MediatR" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+      <PackageReference Include="Npgsql" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Cookbook.Domain\Cookbook.Domain.csproj" />
-        <ProjectReference Include="..\Cookbook.Infrastructure\Cookbook.Infrastructure.csproj" />
-        <ProjectReference Include="..\Cookbook.Repositories\Cookbook.Repositories.csproj" />
     </ItemGroup>
 
 </Project>
