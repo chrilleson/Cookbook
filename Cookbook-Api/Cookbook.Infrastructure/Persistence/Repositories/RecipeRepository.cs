@@ -1,8 +1,7 @@
-﻿using Cookbook.Infrastructure.Persistence;
-using Cookbook.Repositories;
+﻿using Cookbook.Application.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Cookbook.Application.Repositories;
+namespace Cookbook.Infrastructure.Persistence.Repositories;
 
 public class RecipeRepository : IRecipeRepository
 {
