@@ -23,6 +23,12 @@ jobs:
         with:
           dotnet-version: 9.x
 
+      - name: Format check
+        uses: ./.github/actions/format-cookbook-api
+        with:
+          solution-path: './Cookbook-Api/Cookbook.sln'
+          report-directory: 'format-report'
+
       - name: Build
         uses: ./.github/actions/build-cookbook-api
         with:

@@ -1,0 +1,75 @@
+name: 'Format Cookbook API'
+description: 'Runs dotnet format to verify code formatting and generates a report'
+
+inputs:
+  solution-path:
+    description: 'Path to the solution or project to format check'
+    required: true
+  report-directory:
+    description: 'Directory where the format report will be saved'
+    required: false
+    default: 'format-report'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create report directory
+      shell: bash
+      run: mkdir -p ${{ inputs.report-directory }}
+      
+    - name: Run dotnet format
+      shell: bash
+      id: format-check
+      run: |
+        set +e
+        output=$(dotnet format ${{ inputs.solution-path }} --verify-no-changes 2>&1)
+        exit_code=$?
+        echo "$output" > ${{ inputs.report-directory }}/format-results.txt
+        echo "format_exit_code=$exit_code" >> $GITHUB_OUTPUT
+        echo "has_format_errors=$([ $exit_code -ne 0 ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+        
+        # Generate a more readable HTML report
+        echo "<html><head><title>dotnet format Report</title><style>body{font-family:sans-serif;margin:20px}h1{color:#0366d6}.error{color:red}</style></head><body>" > ${{ inputs.report-directory }}/format-report.html
+        echo "<h1>dotnet format Results</h1>" >> ${{ inputs.report-directory }}/format-report.html
+        echo "<pre>" >> ${{ inputs.report-directory }}/format-report.html
+        if [ $exit_code -ne 0 ]; then
+          echo "<p class='error'>❌ Formatting issues found</p>" >> ${{ inputs.report-directory }}/format-report.html
+        else
+          echo "<p>✅ No formatting issues found</p>" >> ${{ inputs.report-directory }}/format-report.html
+        fi
+        echo "$output" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' >> ${{ inputs.report-directory }}/format-report.html
+        echo "</pre></body></html>" >> ${{ inputs.report-directory }}/format-report.html
+        
+        # Add to GitHub Actions job summary
+        echo "## dotnet format Results" >> $GITHUB_STEP_SUMMARY
+        if [ $exit_code -ne 0 ]; then
+          echo "❌ **Formatting issues found**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Please run 'dotnet format' locally and commit the changes." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "$output" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        else
+          echo "✅ **No formatting issues found**" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        # If format issues were found, show them but don't fail yet
+        if [ $exit_code -ne 0 ]; then
+          echo "::warning::Formatting issues found. See the report for details."
+          echo "$output"
+        fi
+        
+    - name: Upload Format Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: format-report
+        path: ${{ inputs.report-directory }}
+        
+    - name: Check Format Result
+      shell: bash
+      run: |
+        if [ "${{ steps.format-check.outputs.has_format_errors }}" == "true" ]; then
+          echo "::error::Formatting issues found. Please run 'dotnet format' locally and commit the changes."
+          exit 1
+        fi
