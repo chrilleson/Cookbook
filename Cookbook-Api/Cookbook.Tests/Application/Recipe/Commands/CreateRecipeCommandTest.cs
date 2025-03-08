@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Recipe.Commands;
-using Cookbook.Application.Repositories;
 using Cookbook.Application.UnitOfWork;
+using Cookbook.Domain.Recipe.Repositories;
 using Cookbook.Domain.Units;
 using Cookbook.Infrastructure.Persistence;
 using Cookbook.Tests.Application.Recipe.Models;
