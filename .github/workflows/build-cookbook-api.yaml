@@ -9,8 +9,8 @@ on:
       - Cookbook-Api/Cookbook.*/**
 
 jobs:
-  build_Test:
-    name: Build and Test
+  job:
+    name: Format, Build, and Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
