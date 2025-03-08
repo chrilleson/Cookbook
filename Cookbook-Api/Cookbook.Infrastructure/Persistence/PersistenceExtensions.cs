@@ -1,5 +1,5 @@
-﻿using Cookbook.Application.Repositories;
-using Cookbook.Application.UnitOfWork;
+﻿using Cookbook.Application.UnitOfWork;
+using Cookbook.Domain.Recipe.Repositories;
 using Cookbook.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Extensions;
 using Cookbook.Application.Recipe.Models;
-using Cookbook.Application.Repositories;
+using Cookbook.Domain.Recipe.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

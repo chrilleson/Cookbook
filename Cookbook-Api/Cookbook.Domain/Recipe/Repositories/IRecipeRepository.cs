@@ -1,4 +1,4 @@
-﻿namespace Cookbook.Application.Repositories;
+﻿namespace Cookbook.Domain.Recipe.Repositories;
 
 public interface IRecipeRepository
 {

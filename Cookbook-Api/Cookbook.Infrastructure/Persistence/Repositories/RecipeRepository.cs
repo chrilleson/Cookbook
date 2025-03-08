@@ -1,5 +1,5 @@
-﻿using Cookbook.Application.Repositories;
-using Cookbook.Domain.Recipe.Entities;
+﻿using Cookbook.Domain.Recipe.Entities;
+using Cookbook.Domain.Recipe.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cookbook.Infrastructure.Persistence.Repositories;
