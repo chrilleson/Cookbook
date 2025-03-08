@@ -26,7 +26,7 @@ public class CreateRecipeCommandTest
         actual.Status.ShouldBe(ResultStatus.Created);
         actual.Value.Name.ShouldBe("My favourite recipe");
         actual.Location.ShouldBe("/api/recipes/0");
-        await recipeRepository.Received(1).Add(Arg.Is<Domain.Recipe.Recipe>(x => x.Name == "My favourite recipe"), Arg.Any<CancellationToken>());
+        await recipeRepository.Received(1).Add(Arg.Is<Domain.Recipe.Entities.Recipe>(x => x.Name == "My favourite recipe"), Arg.Any<CancellationToken>());
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -35,7 +35,7 @@ public class CreateRecipeCommandTest
     {
         var command = new CreateRecipeCommand(TestRecipe.CreateCreateRecipeDto(ingredients: [TestRecipe.CreateIngredientDto(unit: Unit.FromWeight(Weight.G))], instructions: ["test"]));
         var (sut, recipeRepository, unitOfWork) = CreateSut();
-        recipeRepository.Add(Arg.Any<Domain.Recipe.Recipe>(), Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new Exception("Test"));
+        recipeRepository.Add(Arg.Any<Domain.Recipe.Entities.Recipe>(), Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new Exception("Test"));
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
@@ -59,7 +59,7 @@ public class CreateRecipeCommandTest
         actual.Errors.Count().ShouldBe(1);
         actual.Errors.First().ShouldBe("Recipe already exists");
         actual.IsConflict().ShouldBeTrue();
-        await recipeRepository.Received(1).Add(Arg.Is<Domain.Recipe.Recipe>(r => r.Name == "My favourite recipe"), Arg.Any<CancellationToken>());
+        await recipeRepository.Received(1).Add(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Name == "My favourite recipe"), Arg.Any<CancellationToken>());
         unitOfWork.Received(1).Rollback();
     }
 

@@ -22,7 +22,7 @@ public class UpdateRecipeCommandTest
         const int id = 1;
         var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
         var (sut, recipeRepository, _) = CreateSut();
-        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns((Domain.Recipe.Recipe?)null);
+        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns((Domain.Recipe.Entities.Recipe?)null);
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
@@ -42,7 +42,7 @@ public class UpdateRecipeCommandTest
 
         actual.Status.ShouldBe(ResultStatus.Ok);
         actual.SuccessMessage.ShouldBe("Recipe updated");
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Id == command.Id));
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -78,7 +78,7 @@ public class UpdateRecipeCommandTest
         actual.IsConflict().ShouldBeTrue();
         actual.Errors.ShouldContain("Recipe already exists");
         unitOfWork.Received(1).Rollback();
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Id == command.Id));
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class UpdateRecipeCommandTest
         actual.Errors.ShouldContain("Error");
         actual.IsError().ShouldBeTrue();
         unitOfWork.Received(1).Rollback();
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Id == command.Id));
     }
 
     [Theory]
@@ -123,7 +123,7 @@ public class UpdateRecipeCommandTest
         actual.IsError().ShouldBeTrue();
         actual.Errors.First().ShouldBe(expectedError);
         unitOfWork.Received(1).Rollback();
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Id == command.Id));
     }
 
     private static (UpdateRecipeCommandHandler, IRecipeRepository, IUnitOfWork) CreateSut()

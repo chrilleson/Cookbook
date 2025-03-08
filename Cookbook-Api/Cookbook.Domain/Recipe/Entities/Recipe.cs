@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Cookbook.Domain.Recipe.ValueObjects;
 
-namespace Cookbook.Domain.Recipe;
+namespace Cookbook.Domain.Recipe.Entities;
 
 public sealed class Recipe
 {

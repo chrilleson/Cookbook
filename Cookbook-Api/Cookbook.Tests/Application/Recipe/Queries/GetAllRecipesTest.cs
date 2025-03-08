@@ -14,7 +14,7 @@ public class GetAllRecipesTest
     [Fact]
     public async Task GetAllRecipesQuery_RecipesExist_ReturnsSuccessWithRecipes()
     {
-        IEnumerable<Domain.Recipe.Recipe> recipes =
+        IEnumerable<Domain.Recipe.Entities.Recipe> recipes =
         [
             TestRecipe.CreateRecipe(instructions: new Dictionary<int, string> { [1] = "First Instruction" }, ingredients: [TestRecipe.CreateIngredient(weight: Weight.G)]),
             TestRecipe.CreateRecipe(id: 2, name: "Another recipe", instructions: new Dictionary<int, string> { [1] = "Pour the milk in the glass" }, ingredients: [TestRecipe.CreateIngredient(name: "Milk", amount: 2, fluid: Fluid.Dl)])

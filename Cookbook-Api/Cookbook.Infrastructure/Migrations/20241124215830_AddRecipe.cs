@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Cookbook.Domain.Recipe;
+using Cookbook.Domain.Recipe.Entities;
+using Cookbook.Domain.Recipe.ValueObjects;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 

@@ -1,6 +1,6 @@
 ﻿using Cookbook.Domain.Units;
 
-namespace Cookbook.Domain.Recipe;
+namespace Cookbook.Domain.Recipe.ValueObjects;
 
 public sealed class Ingredient
 {
