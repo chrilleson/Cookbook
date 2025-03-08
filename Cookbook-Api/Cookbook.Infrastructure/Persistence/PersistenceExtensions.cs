@@ -44,7 +44,8 @@ public static class PersistenceExtensions
         using var scope = app.ApplicationServices.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        if (!(await dbContext.Database.GetPendingMigrationsAsync()).Any()) return;
+        if (!(await dbContext.Database.GetPendingMigrationsAsync()).Any())
+            return;
 
         await dbContext.Database.MigrateAsync();
     }

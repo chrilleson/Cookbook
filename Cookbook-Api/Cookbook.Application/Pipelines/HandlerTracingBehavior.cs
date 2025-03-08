@@ -26,7 +26,8 @@ public class HandlerTracingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
             var response = await next();
             activity?.SetEndTime(DateTime.UtcNow);
 
-            if (response is not IResult result) return response;
+            if (response is not IResult result)
+                return response;
 
             activity?.SetTag("handler.status", result.Status.ToString());
             var activityStatus = result switch
@@ -41,7 +42,8 @@ public class HandlerTracingBehavior<TRequest, TResponse> : IPipelineBehavior<TRe
 
             activity?.SetStatus(activityStatus);
 
-            if (result.IsOk() || result.Errors == null) return response;
+            if (result.IsOk() || result.Errors == null)
+                return response;
 
             foreach (var error in result.Errors)
             {

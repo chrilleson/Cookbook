@@ -68,7 +68,8 @@ internal sealed class ValidationPipelineBehavior<TRequest, TResponse> : IPipelin
 
     private async Task<(List<ValidationError> resultErrors, List<ValidationFailure> failures)> ValidateAsync(TRequest request, CancellationToken cancellationToken)
     {
-        if (!_validators.Any()) return ([], []);
+        if (!_validators.Any())
+            return ([], []);
 
         var context = new ValidationContext<TRequest>(request);
         var validationResults = await Task.WhenAll(_validators.Select(v => v.ValidateAsync(context, cancellationToken)));
