@@ -30,7 +30,8 @@ public class UpdateRecipeCommandHandler : IRequestHandler<UpdateRecipeCommand, R
         try
         {
             var existingRecipe = await _recipeRepository.GetById(request.Id, cancellationToken);
-            if (existingRecipe is null) return Result.NotFound();
+            if (existingRecipe is null)
+                return Result.NotFound();
 
             var updatedRecipe = existingRecipe.Update(request.Recipe);
             updatedRecipe.RowVersion = request.Recipe.RowVersion;

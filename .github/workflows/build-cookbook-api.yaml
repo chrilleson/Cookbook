@@ -9,8 +9,8 @@ on:
       - Cookbook-Api/Cookbook.*/**
 
 jobs:
-  build_Test:
-    name: Build and Test
+  job:
+    name: Format, Build, and Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -22,6 +22,12 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.x
+
+      - name: Format check
+        uses: ./.github/actions/format-cookbook-api
+        with:
+          solution-path: './Cookbook-Api/Cookbook.sln'
+          report-directory: 'format-report'
 
       - name: Build
         uses: ./.github/actions/build-cookbook-api

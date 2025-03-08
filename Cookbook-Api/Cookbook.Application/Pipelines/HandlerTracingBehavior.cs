@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Cookbook.Application.Pipelines;
 
-public class HandlerTracingBehavior <TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+public class HandlerTracingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private static readonly ActivitySource ActivitySource = new("Cookbook.Application");
 
@@ -26,7 +26,8 @@ public class HandlerTracingBehavior <TRequest, TResponse> : IPipelineBehavior<TR
             var response = await next();
             activity?.SetEndTime(DateTime.UtcNow);
 
-            if (response is not IResult result) return response;
+            if (response is not IResult result)
+                return response;
 
             activity?.SetTag("handler.status", result.Status.ToString());
             var activityStatus = result switch
@@ -41,7 +42,8 @@ public class HandlerTracingBehavior <TRequest, TResponse> : IPipelineBehavior<TR
 
             activity?.SetStatus(activityStatus);
 
-            if (result.IsOk() || result.Errors == null) return response;
+            if (result.IsOk() || result.Errors == null)
+                return response;
 
             foreach (var error in result.Errors)
             {
