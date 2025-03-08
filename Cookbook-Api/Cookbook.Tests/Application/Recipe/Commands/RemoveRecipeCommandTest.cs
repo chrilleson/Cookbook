@@ -23,7 +23,7 @@ public class RemoveRecipeCommandTest
         var actual = await sut.Handle(command, CancellationToken.None);
 
         actual.Status.ShouldBe(ResultStatus.NoContent);
-        recipeRepository.Received(1).Remove(Arg.Is<Domain.Recipe.Recipe>(x => x.Name == "My favourite recipe"));
+        recipeRepository.Received(1).Remove(Arg.Is<Domain.Recipe.Entities.Recipe>(x => x.Name == "My favourite recipe"));
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -38,7 +38,7 @@ public class RemoveRecipeCommandTest
 
         actual.Status.ShouldBe(ResultStatus.NotFound);
         actual.IsNotFound().ShouldBeTrue();
-        recipeRepository.DidNotReceive().Remove(Arg.Any<Domain.Recipe.Recipe>());
+        recipeRepository.DidNotReceive().Remove(Arg.Any<Domain.Recipe.Entities.Recipe>());
         await unitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -72,7 +72,7 @@ public class RemoveRecipeCommandTest
         actual.Errors.Count().ShouldBe(1);
         actual.Errors.First().ShouldBe("Test");
         actual.IsError().ShouldBeTrue();
-        recipeRepository.Received(1).Remove(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == 1));
+        recipeRepository.Received(1).Remove(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Id == 1));
         unitOfWork.Received(1).Rollback();
     }
 

@@ -2,6 +2,7 @@
 using Cookbook.Api.Endpoints;
 using Cookbook.Application;
 using Cookbook.Domain.Recipe;
+using Cookbook.Domain.Recipe.Entities;
 using Cookbook.Infrastructure.Persistence;
 using Cookbook.Infrastructure.Persistence.Repositories;
 using Microsoft.VisualStudio.TestPlatform.TestHost;

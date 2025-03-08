@@ -1,11 +1,13 @@
 ﻿using Cookbook.Application.Recipe.Models;
 using Cookbook.Domain.Recipe;
+using Cookbook.Domain.Recipe.Entities;
+using Cookbook.Domain.Recipe.ValueObjects;
 
 namespace Cookbook.Application.Extensions;
 
 internal static class RecipeDtoExtensions
 {
-    public static Domain.Recipe.Recipe ToEntity(this RecipeDto dto)
+    public static Domain.Recipe.Entities.Recipe ToEntity(this RecipeDto dto)
     {
         var instructions = dto.Instructions!
             .Select((instruction, index) => (index, instruction))
@@ -14,7 +16,7 @@ internal static class RecipeDtoExtensions
             .Select(ingredient => new Ingredient(ingredient.Name, ingredient.Amount, ingredient.Unit.Fluid, ingredient.Unit.Weight, ingredient.Unit.Piece))
             .ToList();
 
-        return new Domain.Recipe.Recipe
+        return new Domain.Recipe.Entities.Recipe
         {
             Id = dto.Id,
             Name = dto.Name,
@@ -24,7 +26,7 @@ internal static class RecipeDtoExtensions
         };
     }
 
-    public static Domain.Recipe.Recipe ToEntity(this CreateRecipeDto dto)
+    public static Domain.Recipe.Entities.Recipe ToEntity(this CreateRecipeDto dto)
     {
         var instructions = dto.Instructions
             .Select((instruction, index) => (index, instruction))
@@ -33,7 +35,7 @@ internal static class RecipeDtoExtensions
             .Select(ingredient => new Ingredient(ingredient.Name, ingredient.Amount, ingredient.Unit.Fluid, ingredient.Unit.Weight, ingredient.Unit.Piece))
             .ToList();
 
-        return new Domain.Recipe.Recipe
+        return new Domain.Recipe.Entities.Recipe
         {
             Name = dto.Name,
             Description = dto.Description,

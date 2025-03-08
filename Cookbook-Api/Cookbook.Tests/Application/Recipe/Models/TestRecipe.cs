@@ -1,5 +1,7 @@
-﻿using Cookbook.Application.Recipe.Models;
+using Cookbook.Application.Recipe.Models;
 using Cookbook.Domain.Recipe;
+using Cookbook.Domain.Recipe.Entities;
+using Cookbook.Domain.Recipe.ValueObjects;
 using Cookbook.Domain.Units;
 
 namespace Cookbook.Tests.Application.Recipe.Models;
@@ -36,7 +38,7 @@ internal static class TestRecipe
         byte[]? rowVersion = null) =>
         new(name, description, instructions, ingredients, rowVersion!);
 
-    internal static Domain.Recipe.Recipe CreateRecipe(
+    internal static Domain.Recipe.Entities.Recipe CreateRecipe(
         int id = 1,
         string name = "My favourite recipe",
         string description = "This is my favourite recipe",

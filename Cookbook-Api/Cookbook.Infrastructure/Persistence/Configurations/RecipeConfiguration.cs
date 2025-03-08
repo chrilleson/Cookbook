@@ -1,4 +1,5 @@
 ﻿using Cookbook.Domain.Recipe;
+using Cookbook.Domain.Recipe.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

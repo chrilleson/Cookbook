@@ -1,4 +1,5 @@
 ﻿using Cookbook.Domain.Recipe;
+using Cookbook.Domain.Recipe.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cookbook.Infrastructure.Persistence;

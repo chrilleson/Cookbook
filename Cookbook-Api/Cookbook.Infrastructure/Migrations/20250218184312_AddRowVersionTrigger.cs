@@ -5,7 +5,7 @@
 namespace Cookbook.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class AddRowVersionTrigger : Migration
+public partial class    AddRowVersionTrigger : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,7 +44,7 @@ public partial class AddRowVersionTrigger : Migration
 
         // Initialize row version for existing records
         migrationBuilder.Sql(@"
-            UPDATE ""Recipes"" 
+            UPDATE ""Recipes""
             SET ""RowVersion"" = decode(encode(gen_random_bytes(8), 'hex'), 'hex');
         ");
     }

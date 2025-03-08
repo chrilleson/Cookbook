@@ -1,11 +1,13 @@
 ﻿using Cookbook.Application.Recipe.Models;
 using Cookbook.Domain.Recipe;
+using Cookbook.Domain.Recipe.Entities;
+using Cookbook.Domain.Recipe.ValueObjects;
 
 namespace Cookbook.Application.Extensions;
 
 public static class RecipeExtensions
 {
-    public static RecipeDto ToDto(this Domain.Recipe.Recipe recipe)
+    public static RecipeDto ToDto(this Domain.Recipe.Entities.Recipe recipe)
     {
         var instructions = recipe.Instructions
             .Select(instruction => instruction.Value)
@@ -18,7 +20,7 @@ public static class RecipeExtensions
         return new RecipeDto(recipe.Id, recipe.Name, recipe.Description, instructions, ingredients, recipe.RowVersion ?? []);
     }
 
-    public static Domain.Recipe.Recipe Update(this Domain.Recipe.Recipe recipe, UpdateRecipeDto dto)
+    public static Domain.Recipe.Entities.Recipe Update(this Domain.Recipe.Entities.Recipe recipe, UpdateRecipeDto dto)
     {
         recipe.Name = dto.Name ?? recipe.Name;
         recipe.Description = dto.Description ?? recipe.Description;
