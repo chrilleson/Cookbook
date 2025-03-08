@@ -2,7 +2,7 @@
 using Cookbook.Application.Recipe.Models;
 using Cookbook.Application.Recipe.Queries;
 using Cookbook.Domain.Recipe.Repositories;
-using Cookbook.Domain.Units;
+using Cookbook.Domain.Shared.Enums;
 using Cookbook.Tests.Application.Recipe.Models;
 using Microsoft.Extensions.Logging;
 using NSubstitute.ExceptionExtensions;

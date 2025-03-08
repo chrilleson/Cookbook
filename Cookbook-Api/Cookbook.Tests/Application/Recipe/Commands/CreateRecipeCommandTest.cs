@@ -2,7 +2,7 @@
 using Cookbook.Application.Recipe.Commands;
 using Cookbook.Application.UnitOfWork;
 using Cookbook.Domain.Recipe.Repositories;
-using Cookbook.Domain.Units;
+using Cookbook.Domain.Shared.Enums;
 using Cookbook.Infrastructure.Persistence;
 using Cookbook.Tests.Application.Recipe.Models;
 using Microsoft.EntityFrameworkCore;

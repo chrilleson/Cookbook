@@ -1,4 +1,4 @@
-﻿namespace Cookbook.Domain.Units;
+﻿namespace Cookbook.Domain.Shared.Enums;
 
 public enum Fluid
 {

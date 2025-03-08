@@ -1,4 +1,4 @@
-﻿using Cookbook.Domain.Units;
+﻿using Cookbook.Domain.Shared.Enums;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
