@@ -2,7 +2,7 @@ using Cookbook.Application.Recipe.Models;
 using Cookbook.Domain.Recipe;
 using Cookbook.Domain.Recipe.Entities;
 using Cookbook.Domain.Recipe.ValueObjects;
-using Cookbook.Domain.Units;
+using Cookbook.Domain.Shared.Enums;
 
 namespace Cookbook.Tests.Application.Recipe.Models;
 
