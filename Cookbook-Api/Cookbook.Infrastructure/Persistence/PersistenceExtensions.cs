@@ -1,6 +1,8 @@
-﻿using Cookbook.Application.UnitOfWork;
+﻿using Cookbook.Application.Recipe.Services;
+using Cookbook.Application.UnitOfWork;
 using Cookbook.Domain.Recipe.Repositories;
 using Cookbook.Infrastructure.Persistence.Repositories;
+using Cookbook.Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -21,6 +23,7 @@ public static class PersistenceExtensions
         });
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<IIdGenerator, IdGenerator>();
 
         return builder;
     }

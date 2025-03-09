@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Extensions;
 using Cookbook.Application.Recipe.Models;
+using Cookbook.Application.Recipe.Services;
 using Cookbook.Application.UnitOfWork;
 using Cookbook.Domain.Recipe.Repositories;
 using MediatR;
@@ -14,12 +15,14 @@ public record CreateRecipeCommand(CreateRecipeDto Recipe) : IRequest<Result<Reci
 
 public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, Result<RecipeDto>>
 {
+    private readonly IRecipeService _recipeService;
     private readonly IRecipeRepository _recipeRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateRecipeCommandHandler> _logger;
 
-    public CreateRecipeCommandHandler(IRecipeRepository recipeRepository, IUnitOfWork unitOfWork, ILogger<CreateRecipeCommandHandler> logger)
+    public CreateRecipeCommandHandler(IRecipeService recipeService, IRecipeRepository recipeRepository, IUnitOfWork unitOfWork, ILogger<CreateRecipeCommandHandler> logger)
     {
+        _recipeService = recipeService;
         _recipeRepository = recipeRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -29,11 +32,12 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, R
     {
         try
         {
-            var recipe = request.Recipe.ToEntity();
-            await _recipeRepository.Add(recipe, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            var recipe = await _recipeService.CreateAsync(request.Recipe, cancellationToken);
+            // var recipe = request.Recipe.ToEntity();
+            // await _recipeRepository.Add(recipe, cancellationToken);
+            // await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return Result.Created(recipe.ToDto(), RecipeRoutes.FormatRoute(RecipeRoutes.GetRecipe, recipe.Id));
+            return Result.Created(recipe, RecipeRoutes.FormatRoute(RecipeRoutes.GetRecipe, recipe.Id));
         }
         catch (DbUpdateException e) when (e.InnerException is PostgresException { SqlState: "23505" })
         {

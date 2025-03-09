@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Cookbook.Application.Pipelines;
+using Cookbook.Application.Recipe.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,8 @@ public static class ApplicationExtensions
             cfg.AddOpenBehavior(typeof(HandlerTracingBehavior<,>));
         });
         services.AddValidatorsFromAssembly(TargetAssembly);
+
+        services.AddScoped<IRecipeService, RecipeService>();
 
         return services;
     }

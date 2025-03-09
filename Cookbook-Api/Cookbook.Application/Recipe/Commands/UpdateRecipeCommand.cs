@@ -1,8 +1,11 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Extensions;
 using Cookbook.Application.Recipe.Models;
+using Cookbook.Application.Recipe.Services;
 using Cookbook.Application.UnitOfWork;
+using Cookbook.Domain.Recipe.Events;
 using Cookbook.Domain.Recipe.Repositories;
+using Cookbook.Domain.Recipe.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,15 +17,17 @@ public record UpdateRecipeCommand(int Id, UpdateRecipeDto Recipe) : IRequest<Res
 
 public class UpdateRecipeCommandHandler : IRequestHandler<UpdateRecipeCommand, Result>
 {
+    private readonly IRecipeService _recipeService;
     private readonly IRecipeRepository _recipeRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateRecipeCommandHandler> _logger;
 
-    public UpdateRecipeCommandHandler(IRecipeRepository recipeRepository, IUnitOfWork unitOfWork, ILogger<UpdateRecipeCommandHandler> logger)
+    public UpdateRecipeCommandHandler(IRecipeRepository recipeRepository, IUnitOfWork unitOfWork, ILogger<UpdateRecipeCommandHandler> logger, IRecipeService recipeService)
     {
         _recipeRepository = recipeRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _recipeService = recipeService;
     }
 
     public async Task<Result> Handle(UpdateRecipeCommand request, CancellationToken cancellationToken)
@@ -31,13 +36,19 @@ public class UpdateRecipeCommandHandler : IRequestHandler<UpdateRecipeCommand, R
         {
             var existingRecipe = await _recipeRepository.GetById(request.Id, cancellationToken);
             if (existingRecipe is null)
+            {
                 return Result.NotFound();
+            }
 
-            var updatedRecipe = existingRecipe.Update(request.Recipe);
-            updatedRecipe.RowVersion = request.Recipe.RowVersion;
+            await _recipeService.UpdateAsync(request.Id, request.Recipe, cancellationToken);
 
-            _recipeRepository.Update(updatedRecipe);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            // var updatedRecipe = existingRecipe.Update(request.Recipe);
+            // updatedRecipe.UpdateRowVersion(request.Recipe.RowVersion);
+            //
+            // _recipeRepository.Update(updatedRecipe);
+            // await _unitOfWork.SaveChangesAsync(cancellationToken);
+            //
+            // updatedRecipe.AddDomainEvent(new RecipeUpdatedEvent(updatedRecipe));
 
             return Result.SuccessWithMessage("Recipe updated");
         }
