@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
-using Cookbook.Application.Extensions;
 using Cookbook.Application.Recipe.Models;
 using Cookbook.Application.UnitOfWork;
 using Cookbook.Domain.Recipe.Repositories;
+using Cookbook.Domain.Recipe.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -29,14 +29,48 @@ public class UpdateRecipeCommandHandler : IRequestHandler<UpdateRecipeCommand, R
     {
         try
         {
-            var existingRecipe = await _recipeRepository.GetById(request.Id, cancellationToken);
-            if (existingRecipe is null)
+            var recipe = await _recipeRepository.GetById(new RecipeId(request.Id), cancellationToken);
+            if (recipe is null)
+            {
                 return Result.NotFound();
+            }
 
-            var updatedRecipe = existingRecipe.Update(request.Recipe);
-            updatedRecipe.RowVersion = request.Recipe.RowVersion;
+            if (!string.IsNullOrEmpty(request.Recipe.Name))
+            {
+                recipe.UpdateName(request.Recipe.Name);
+            }
 
-            _recipeRepository.Update(updatedRecipe);
+            recipe.UpdateDescription(request.Recipe.Description);
+
+            if (request.Recipe.Instructions != null)
+            {
+                recipe.ClearInstructions();
+
+                foreach (var instruction in request.Recipe.Instructions)
+                {
+                    recipe.AddInstruction(instruction);
+                }
+            }
+
+            if (request.Recipe.Ingredients != null)
+            {
+                recipe.ClearIngredients();
+
+                foreach (var ingredientDto in request.Recipe.Ingredients)
+                {
+                    var unit = ingredientDto switch
+                    {
+                        { Unit.Fluid: not null } => MeasurementUnit.Fluid(ingredientDto.Unit.Fluid.Value),
+                        { Unit.Weight: not null } => MeasurementUnit.Weight(ingredientDto.Unit.Weight.Value),
+                        { Unit.Piece: not null } => MeasurementUnit.Piece(),
+                        _ => throw new InvalidOperationException("Invalid unit")
+                    };
+
+                    recipe.AddIngredient(ingredientDto.Name, ingredientDto.Amount, unit);
+                }
+            }
+
+            _recipeRepository.Update(recipe);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Result.SuccessWithMessage("Recipe updated");

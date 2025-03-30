@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.UnitOfWork;
 using Cookbook.Domain.Recipe.Repositories;
+using Cookbook.Domain.Recipe.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -26,9 +27,11 @@ public class RemoveRecipeCommandHandler : IRequestHandler<RemoveRecipeCommand, R
     {
         try
         {
-            var recipe = await _recipeRepository.GetById(request.Id, cancellationToken);
+            var recipe = await _recipeRepository.GetById(new RecipeId(request.Id), cancellationToken);
             if (recipe is null)
+            {
                 return Result<Unit>.NotFound();
+            }
 
             _recipeRepository.Remove(recipe);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
