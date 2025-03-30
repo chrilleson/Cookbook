@@ -2,7 +2,7 @@
 
 namespace Cookbook.Domain.Recipe.Events;
 
-public class RecipeNameUpdatedEvent : DomainEvent
+public sealed class RecipeNameUpdatedEvent : DomainEvent
 {
     public Entities.Recipe Recipe { get; }
 

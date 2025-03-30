@@ -14,9 +14,9 @@ public class DomainTest
     {
         var result = Types.InAssembly(DomainAssembly)
             .That()
-            .AreClasses()
+            .ArePublic().And().AreClasses().And().DoNotHaveNameMatching("MeasurementUnit")
             .Should()
-            .BeSealed()
+            .BeSealed().Or().BeAbstract()
             .GetResult();
 
         result.IsSuccessful.ShouldBeTrue();

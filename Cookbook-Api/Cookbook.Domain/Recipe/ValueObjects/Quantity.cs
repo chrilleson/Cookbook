@@ -3,7 +3,7 @@ using Ardalis.GuardClauses;
 
 namespace Cookbook.Domain.Recipe.ValueObjects;
 
-public record Quantity {
+public sealed record Quantity {
     public double Amount { get; }
     public MeasurementUnit Unit { get; }
 

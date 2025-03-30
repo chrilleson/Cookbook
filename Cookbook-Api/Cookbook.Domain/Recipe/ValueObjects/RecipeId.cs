@@ -2,7 +2,7 @@
 
 namespace Cookbook.Domain.Recipe.ValueObjects;
 
-public record RecipeId
+public sealed record RecipeId
 {
     public int Value { get; }
 

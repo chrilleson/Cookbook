@@ -5,7 +5,7 @@ using Cookbook.Domain.Shared.Enums;
 
 namespace Cookbook.Domain.Recipe.Converters;
 
-public class MeasurementUnitJsonConverter : JsonConverter<MeasurementUnit>
+public sealed class MeasurementUnitJsonConverter : JsonConverter<MeasurementUnit>
 {
     public override MeasurementUnit Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

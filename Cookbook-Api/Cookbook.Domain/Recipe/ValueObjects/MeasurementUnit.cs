@@ -42,7 +42,7 @@ public record MeasurementUnit
 
 }
 
-public record FluidMeasurement : MeasurementUnit
+public sealed record FluidMeasurement : MeasurementUnit
 {
     public Fluid Unit { get; }
 
@@ -52,7 +52,7 @@ public record FluidMeasurement : MeasurementUnit
     }
 }
 
-public record WeightMeasurement : MeasurementUnit
+public sealed record WeightMeasurement : MeasurementUnit
 {
     public Weight Unit { get; }
 
@@ -62,7 +62,7 @@ public record WeightMeasurement : MeasurementUnit
     }
 }
 
-public record PieceMeasurement : MeasurementUnit
+public sealed record PieceMeasurement : MeasurementUnit
 {
     public PieceMeasurement() : base("Piece", "Piece") { }
 }

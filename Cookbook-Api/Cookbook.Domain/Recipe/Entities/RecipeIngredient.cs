@@ -1,10 +1,9 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Cookbook.Domain.Recipe.ValueObjects;
 
 namespace Cookbook.Domain.Recipe.Entities;
 
-public class RecipeIngredient
+public sealed class RecipeIngredient
 {
     public string Name { get; private set; }
     public Quantity Quantity { get; private set; }

@@ -2,7 +2,7 @@
 
 namespace Cookbook.Domain.Recipe.Entities;
 
-public class Instruction
+public sealed class Instruction
 {
     public int StepNumber { get; private set; }
     public string Text { get; private set; }
