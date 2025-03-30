@@ -1,7 +1,8 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Extensions;
 using Cookbook.Application.Recipe.Models;
-using Cookbook.Application.Repositories;
+using Cookbook.Domain.Recipe.Repositories;
+using Cookbook.Domain.Recipe.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -24,9 +25,9 @@ public class GetRecipeByIdQueryHandler : IRequestHandler<GetRecipeByIdQuery, Res
     {
         try
         {
-            var recipe = await _recipeRepository.GetById(request.Id, cancellationToken);
+            var recipe = await _recipeRepository.GetById(new RecipeId(request.Id), cancellationToken);
             return recipe is not null
-                ? Result.Success(recipe.ToDto(), "Recipe found")
+                ? Result.Success(recipe.MapToDto(), "Recipe found")
                 : Result.NotFound("Recipe not found");
         }
         catch (Exception e)

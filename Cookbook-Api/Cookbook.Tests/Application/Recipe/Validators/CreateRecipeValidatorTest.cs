@@ -1,7 +1,7 @@
 ﻿using Cookbook.Application.Recipe.Commands;
 using Cookbook.Application.Recipe.Commands.Validators;
 using Cookbook.Application.Recipe.Models;
-using Cookbook.Domain.Units;
+using Cookbook.Domain.Shared.Enums;
 using Cookbook.Tests.Application.Recipe.Models;
 using FluentValidation.TestHelper;
 

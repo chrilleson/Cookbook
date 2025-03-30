@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Recipe.Commands;
-using Cookbook.Application.Repositories;
 using Cookbook.Application.UnitOfWork;
-using Cookbook.Infrastructure.Persistence;
+using Cookbook.Domain.Recipe.Repositories;
+using Cookbook.Domain.Recipe.ValueObjects;
 using Cookbook.Tests.Application.Recipe.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -22,7 +22,7 @@ public class UpdateRecipeCommandTest
         const int id = 1;
         var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
         var (sut, recipeRepository, _) = CreateSut();
-        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns((Domain.Recipe.Recipe?)null);
+        recipeRepository.GetById(new RecipeId(command.Id), Arg.Any<CancellationToken>()).Returns((Domain.Recipe.Entities.Recipe?)null);
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
@@ -34,15 +34,15 @@ public class UpdateRecipeCommandTest
     {
         const int id = 1;
         var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
+        var existingRecipe = TestRecipe.CreateRecipe(instructions: [TestRecipe.CreateInstruction()], ingredients: [TestRecipe.CreateRecipeIngredient()]);
         var (sut, recipeRepository, unitOfWork) = CreateSut();
-        var existingRecipe = TestRecipe.CreateRecipe();
-        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        recipeRepository.GetById(new RecipeId(command.Id), Arg.Any<CancellationToken>()).Returns(existingRecipe);
 
         var actual = await sut.Handle(command, CancellationToken.None);
 
         actual.Status.ShouldBe(ResultStatus.Ok);
         actual.SuccessMessage.ShouldBe("Recipe updated");
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Id == command.Id));
         await unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
@@ -51,9 +51,9 @@ public class UpdateRecipeCommandTest
     {
         const int id = 1;
         var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
+        var existingRecipe = TestRecipe.CreateRecipe(instructions: [TestRecipe.CreateInstruction()], ingredients: [TestRecipe.CreateRecipeIngredient()]);
         var (sut, recipeRepository, unitOfWork) = CreateSut();
-        var existingRecipe = TestRecipe.CreateRecipe();
-        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        recipeRepository.GetById(new RecipeId(command.Id), Arg.Any<CancellationToken>()).Returns(existingRecipe);
         unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new Exception());
 
         var actual = await sut.Handle(command, CancellationToken.None);
@@ -67,9 +67,9 @@ public class UpdateRecipeCommandTest
     {
         const int id = 1;
         var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
+        var existingRecipe = TestRecipe.CreateRecipe(instructions: [TestRecipe.CreateInstruction()], ingredients: [TestRecipe.CreateRecipeIngredient()]);
         var (sut, recipeRepository, unitOfWork) = CreateSut();
-        var existingRecipe = TestRecipe.CreateRecipe();
-        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        recipeRepository.GetById(new RecipeId(command.Id), Arg.Any<CancellationToken>()).Returns(existingRecipe);
         unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Error", new PostgresException(null!, null!, null!, "23505", null)));
 
         var actual = await sut.Handle(command, CancellationToken.None);
@@ -78,7 +78,7 @@ public class UpdateRecipeCommandTest
         actual.IsConflict().ShouldBeTrue();
         actual.Errors.ShouldContain("Recipe already exists");
         unitOfWork.Received(1).Rollback();
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Id == command.Id));
     }
 
     [Fact]
@@ -86,9 +86,9 @@ public class UpdateRecipeCommandTest
     {
         const int id = 1;
         var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
+        var existingRecipe = TestRecipe.CreateRecipe(instructions: [TestRecipe.CreateInstruction()], ingredients: [TestRecipe.CreateRecipeIngredient()]);
         var (sut, recipeRepository, unitOfWork) = CreateSut();
-        var existingRecipe = TestRecipe.CreateRecipe();
-        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        recipeRepository.GetById(new RecipeId(command.Id), Arg.Any<CancellationToken>()).Returns(existingRecipe);
         unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).ThrowsAsyncForAnyArgs(new DbUpdateException("Error"));
 
         var actual = await sut.Handle(command, CancellationToken.None);
@@ -97,7 +97,7 @@ public class UpdateRecipeCommandTest
         actual.Errors.ShouldContain("Error");
         actual.IsError().ShouldBeTrue();
         unitOfWork.Received(1).Rollback();
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Id == command.Id));
     }
 
     [Theory]
@@ -110,9 +110,9 @@ public class UpdateRecipeCommandTest
         var concurrencyException = new DbUpdateConcurrencyException("Concurrency exception", [updateEntry]);
         const int id = 1;
         var command = new UpdateRecipeCommand(id, TestRecipe.CreateUpdateRecipeDto());
-        var existingRecipe = TestRecipe.CreateRecipe();
+        var existingRecipe = TestRecipe.CreateRecipe(instructions: [TestRecipe.CreateInstruction()], ingredients: [TestRecipe.CreateRecipeIngredient()]);
         var (sut, recipeRepository, unitOfWork) = CreateSut();
-        recipeRepository.GetById(command.Id, Arg.Any<CancellationToken>()).Returns(existingRecipe);
+        recipeRepository.GetById(new RecipeId(command.Id), Arg.Any<CancellationToken>()).Returns(existingRecipe);
         unitOfWork
             .SaveChangesAsync(Arg.Any<CancellationToken>())
             .ThrowsAsyncForAnyArgs(concurrencyException);
@@ -123,7 +123,7 @@ public class UpdateRecipeCommandTest
         actual.IsError().ShouldBeTrue();
         actual.Errors.First().ShouldBe(expectedError);
         unitOfWork.Received(1).Rollback();
-        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Recipe>(r => r.Id == command.Id));
+        recipeRepository.Received(1).Update(Arg.Is<Domain.Recipe.Entities.Recipe>(r => r.Id == command.Id));
     }
 
     private static (UpdateRecipeCommandHandler, IRecipeRepository, IUnitOfWork) CreateSut()

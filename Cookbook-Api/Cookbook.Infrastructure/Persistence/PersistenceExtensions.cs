@@ -1,6 +1,8 @@
-﻿using Cookbook.Application.Repositories;
+﻿using Cookbook.Application.Recipe.Services;
 using Cookbook.Application.UnitOfWork;
+using Cookbook.Domain.Recipe.Repositories;
 using Cookbook.Infrastructure.Persistence.Repositories;
+using Cookbook.Infrastructure.Persistence.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -15,12 +17,17 @@ public static class PersistenceExtensions
     {
         builder.AddNpgsqlDbContext<AppDbContext>(connectionName: "postgres", configureDbContextOptions: options =>
         {
-            options.ConfigureWarnings(x => x.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
+            options.ConfigureWarnings(x =>
+            {
+                x.Throw(RelationalEventId.MultipleCollectionIncludeWarning);
+                x.Ignore(RelationalEventId.PendingModelChangesWarning);
+            });
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             options.UseNpgsql(opt => opt.ConfigureDataSource(x => x.EnableDynamicJson()));
         });
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<IIdGenerator, IdGenerator>();
 
         return builder;
     }

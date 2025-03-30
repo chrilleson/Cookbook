@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Extensions;
 using Cookbook.Application.Recipe.Models;
-using Cookbook.Application.Repositories;
+using Cookbook.Domain.Recipe.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -25,7 +25,7 @@ public class GetAllRecipesQueryHandler : IRequestHandler<GetAllRecipesQuery, Res
         try
         {
             var recipes = await _recipeRepository.GetAll(cancellationToken);
-            return Result.Success(recipes.Select(RecipeExtensions.ToDto));
+            return Result.Success(recipes.Select(r => r.MapToDto()));
         }
         catch (Exception e)
         {

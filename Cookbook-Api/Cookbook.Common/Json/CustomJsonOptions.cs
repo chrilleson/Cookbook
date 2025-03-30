@@ -11,8 +11,12 @@ public class CustomJsonOptions
 
     public static JsonSerializerOptions Configure(JsonSerializerOptions options)
     {
-        options.PropertyNamingPolicy = new CustomJsonNamingPolicy();
+        options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         options.Converters.Add(new JsonStringEnumConverter());
+
+        options.PropertyNameCaseInsensitive = true;
+        options.IncludeFields = true;
+        options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 
         return options;
     }

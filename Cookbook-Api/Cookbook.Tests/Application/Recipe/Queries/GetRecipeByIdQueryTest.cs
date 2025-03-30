@@ -1,8 +1,9 @@
 ﻿using Ardalis.Result;
 using Cookbook.Application.Recipe.Models;
 using Cookbook.Application.Recipe.Queries;
-using Cookbook.Application.Repositories;
-using Cookbook.Domain.Units;
+using Cookbook.Domain.Recipe.Repositories;
+using Cookbook.Domain.Recipe.ValueObjects;
+using Cookbook.Domain.Shared.Enums;
 using Cookbook.Tests.Application.Recipe.Models;
 using Microsoft.Extensions.Logging;
 using NSubstitute.ExceptionExtensions;
@@ -15,9 +16,9 @@ public class GetRecipeByIdQueryTest
     [Fact]
     public async Task GetRecipeByIdQuery_RecipeExists_ReturnsSuccessWithRecipe()
     {
-        var recipe = TestRecipe.CreateRecipe(instructions: new Dictionary<int, string> { [1] = "First Instruction" }, ingredients: [TestRecipe.CreateIngredient(weight: Weight.G)]);
+        var recipe = TestRecipe.CreateRecipe(instructions: [TestRecipe.CreateInstruction()], ingredients: [TestRecipe.CreateRecipeIngredient()]);
         var (sut, recipeRepository) = CreateSut();
-        recipeRepository.GetById(1, Arg.Any<CancellationToken>()).Returns(recipe);
+        recipeRepository.GetById(new RecipeId(1), Arg.Any<CancellationToken>()).Returns(recipe);
 
         var actual = await sut.Handle(new GetRecipeByIdQuery(1), CancellationToken.None);
 
@@ -36,7 +37,7 @@ public class GetRecipeByIdQueryTest
     public async Task GetRecipeByIdQuery_RecipeDoesNotExist_ReturnsNotFound()
     {
         var (sut, recipeRepository) = CreateSut();
-        recipeRepository.GetById(1, Arg.Any<CancellationToken>()).ReturnsNull();
+        recipeRepository.GetById(new RecipeId(1), Arg.Any<CancellationToken>()).ReturnsNull();
 
         var actual = await sut.Handle(new GetRecipeByIdQuery(1), CancellationToken.None);
 
@@ -49,7 +50,7 @@ public class GetRecipeByIdQueryTest
     public async Task GetRecipeByIdQuery_ThrowsException_ReturnsError()
     {
         var (sut, recipeRepository) = CreateSut();
-        recipeRepository.GetById(1, Arg.Any<CancellationToken>()).ThrowsAsync(new Exception("Test"));
+        recipeRepository.GetById(new RecipeId(1), Arg.Any<CancellationToken>()).ThrowsAsync(new Exception("Test"));
 
         var actual = await sut.Handle(new GetRecipeByIdQuery(1), CancellationToken.None);
 

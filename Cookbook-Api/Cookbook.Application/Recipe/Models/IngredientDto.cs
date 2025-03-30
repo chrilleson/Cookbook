@@ -1,4 +1,4 @@
-﻿using Cookbook.Domain.Units;
+﻿using Cookbook.Domain.Shared.Enums;
 
 namespace Cookbook.Application.Recipe.Models;
 

@@ -6,7 +6,6 @@ using Cookbook.Application.Recipe.Models;
 using Cookbook.Application.Recipe.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OutputCaching;
 
 namespace Cookbook.Api.Endpoints.Recipe;
 
