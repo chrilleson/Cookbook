@@ -2,6 +2,7 @@
 using Cookbook.Application.Recipe.Models;
 using Cookbook.Application.Recipe.Queries;
 using Cookbook.Domain.Recipe.Repositories;
+using Cookbook.Domain.Recipe.ValueObjects;
 using Cookbook.Domain.Shared.Enums;
 using Cookbook.Tests.Application.Recipe.Models;
 using Microsoft.Extensions.Logging;
@@ -16,8 +17,8 @@ public class GetAllRecipesTest
     {
         IEnumerable<Domain.Recipe.Entities.Recipe> recipes =
         [
-            TestRecipe.CreateRecipe(instructions: new Dictionary<int, string> { [1] = "First Instruction" }, ingredients: [TestRecipe.CreateIngredient(weight: Weight.G)]),
-            TestRecipe.CreateRecipe(id: 2, name: "Another recipe", instructions: new Dictionary<int, string> { [1] = "Pour the milk in the glass" }, ingredients: [TestRecipe.CreateIngredient(name: "Milk", amount: 2, fluid: Fluid.Dl)])
+            TestRecipe.CreateRecipe(instructions: [TestRecipe.CreateInstruction()], ingredients: [TestRecipe.CreateRecipeIngredient()]),
+            TestRecipe.CreateRecipe(id: 2, name: "Another recipe", instructions: [TestRecipe.CreateInstruction(text: "Pour the milk in the glass")], ingredients: [TestRecipe.CreateRecipeIngredient(name: "Milk", amount: 2, MeasurementUnit.Fluid(Fluid.Dl))])
         ];
         var (sut, recipeRepository) = CreateSut();
         recipeRepository.GetAll(Arg.Any<CancellationToken>()).Returns(recipes);
