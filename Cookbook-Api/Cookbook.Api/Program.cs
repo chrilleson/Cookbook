@@ -2,8 +2,6 @@ using Cookbook.Api.Extensions;
 using Cookbook.Api.Middlewares;
 using Cookbook.Application;
 using Cookbook.Infrastructure.Persistence;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Trace;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
