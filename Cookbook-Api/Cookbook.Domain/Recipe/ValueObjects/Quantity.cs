@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 
 namespace Cookbook.Domain.Recipe.ValueObjects;
 

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Cookbook.Domain.Recipe;
 using Cookbook.Domain.Recipe.Entities;
 using NetArchTest.Rules;
 

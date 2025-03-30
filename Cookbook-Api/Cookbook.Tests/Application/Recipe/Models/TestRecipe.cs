@@ -33,7 +33,7 @@ internal static class TestRecipe
         string name = "My favourite recipe",
         string description = "This is my favourite recipe",
         IEnumerable<Instruction>? instructions = null,
-        IEnumerable<RecipeIngredient>? ingredients = null)
+        IEnumerable<Ingredient>? ingredients = null)
     {
         var recipe = new Domain.Recipe.Entities.Recipe(
             id: new RecipeId(id),
@@ -55,9 +55,9 @@ internal static class TestRecipe
 
     internal static Instruction CreateInstruction(int stepNumber = 0, string text = "First Instruction") => new(stepNumber, text);
 
-    internal static RecipeIngredient CreateRecipeIngredient(string name = "Beef", double amount = 500, MeasurementUnit? unit = null)
+    internal static Ingredient CreateRecipeIngredient(string name = "Beef", double amount = 500, MeasurementUnit? unit = null)
     {
         var quantity = new Quantity(amount, unit ?? MeasurementUnit.Weight(Weight.G));
-        return new RecipeIngredient(name, quantity);
+        return new Ingredient(name, quantity);
     }
 }

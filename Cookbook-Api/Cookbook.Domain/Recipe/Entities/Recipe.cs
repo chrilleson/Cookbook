@@ -10,14 +10,14 @@ namespace Cookbook.Domain.Recipe.Entities;
 public sealed class Recipe
 {
     private readonly List<Instruction> _instructions = [];
-    private readonly List<RecipeIngredient> _ingredients = [];
+    private readonly List<Ingredient> _ingredients = [];
     private readonly List<IDomainEvent> _domainEvents = [];
 
     public RecipeId Id { get; private set; }
     public string Name { get; private set; }
     public string? Description { get; private set; }
     public IReadOnlyCollection<Instruction> Instructions => _instructions.AsReadOnly();
-    public IReadOnlyCollection<RecipeIngredient> Ingredients => _ingredients.AsReadOnly();
+    public IReadOnlyCollection<Ingredient> Ingredients => _ingredients.AsReadOnly();
 
     [Timestamp]
     public byte[]? RowVersion { get; private set; }
@@ -101,7 +101,7 @@ public sealed class Recipe
             throw new DomainException("Ingredient amount must be positive");
         }
 
-        var ingredient = new RecipeIngredient(name, new Quantity(amount, unit));
+        var ingredient = new Ingredient(name, new Quantity(amount, unit));
         _ingredients.Add(ingredient);
     }
 

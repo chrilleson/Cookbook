@@ -35,7 +35,7 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .HasColumnType("jsonb");
 
         builder.Property(r => r.Ingredients)
-            .HasConversion<JsonArrayConverter<RecipeIngredient>>(new JsonArrayComparer<RecipeIngredient>())
+            .HasConversion<JsonArrayConverter<Ingredient>>(new JsonArrayComparer<Ingredient>())
             .HasField("_ingredients")
             .HasColumnType("jsonb");
 
