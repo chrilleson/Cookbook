@@ -10,7 +10,6 @@ public record MeasurementUnit
     public string Symbol { get; }
     public string UnitType { get; }
 
-    [JsonConstructor]
     protected MeasurementUnit(string symbol, string unitType)
     {
         Symbol = symbol;

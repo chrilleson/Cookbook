@@ -41,11 +41,11 @@ internal static class TestRecipe
             description
         );
 
-        foreach (var instruction in instructions)
+        foreach (var instruction in instructions ?? [])
         {
             recipe.AddInstruction(instruction.Text);
         }
-        foreach (var ingredient in ingredients)
+        foreach (var ingredient in ingredients ?? [])
         {
             recipe.AddIngredient(ingredient.Name, ingredient.Quantity.Amount, ingredient.Quantity.Unit);
         }

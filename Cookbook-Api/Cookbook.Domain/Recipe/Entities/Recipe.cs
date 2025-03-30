@@ -24,8 +24,6 @@ public sealed class Recipe
 
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
-    public Recipe() { }
-
     public Recipe(RecipeId id, string name, string? description = null)
     {
         Id = id;
