@@ -1,5 +1,6 @@
 ﻿using Cookbook.Domain.Recipe.Entities;
 using Cookbook.Domain.Recipe.Repositories;
+using Cookbook.Domain.Recipe.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cookbook.Infrastructure.Persistence.Repositories;
@@ -19,7 +20,7 @@ public class RecipeRepository : IRecipeRepository
     public async Task<bool> AnyById(int id, CancellationToken cancellationToken = default) =>
         await _dbContext.Recipes.AnyAsync(x => x.Id == id, cancellationToken);
 
-    public async Task<Recipe?> GetById(int id, CancellationToken cancellationToken = default) =>
+    public async Task<Recipe?> GetById(RecipeId id, CancellationToken cancellationToken = default) =>
         await _dbContext.Recipes.FindAsync([id], cancellationToken);
 
     public async Task<IEnumerable<Recipe>> GetAll(CancellationToken cancellationToken = default) =>

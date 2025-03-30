@@ -1,4 +1,6 @@
-﻿namespace Cookbook.Domain.Recipe.Repositories;
+﻿using Cookbook.Domain.Recipe.ValueObjects;
+
+namespace Cookbook.Domain.Recipe.Repositories;
 
 public interface IRecipeRepository
 {
@@ -6,7 +8,7 @@ public interface IRecipeRepository
 
     Task<bool> AnyById(int id, CancellationToken cancellationToken = default);
 
-    Task<Domain.Recipe.Entities.Recipe?> GetById(int id, CancellationToken cancellationToken = default);
+    Task<Entities.Recipe?> GetById(RecipeId id, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<Domain.Recipe.Entities.Recipe>> GetAll(CancellationToken cancellationToken = default);
 

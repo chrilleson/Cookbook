@@ -5,7 +5,7 @@
 namespace Cookbook.Infrastructure.Migrations;
 
 /// <inheritdoc />
-public partial class    AddRowVersionTrigger : Migration
+public partial class AddRowVersionTrigger : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
