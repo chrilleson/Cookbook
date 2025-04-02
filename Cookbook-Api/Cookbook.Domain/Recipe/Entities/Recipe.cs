@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Ardalis.GuardClauses;
 using Cookbook.Domain.Recipe.Events;
 using Cookbook.Domain.Recipe.ValueObjects;
@@ -20,7 +20,7 @@ public sealed class Recipe
     public IReadOnlyCollection<Ingredient> Ingredients => _ingredients.AsReadOnly();
 
     [Timestamp]
-    public byte[]? RowVersion { get; private set; }
+    public byte[]? RowVersion { get; init; }
 
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
@@ -116,9 +116,6 @@ public sealed class Recipe
     }
 
     public void ClearIngredients() => _ingredients.Clear();
-
-    public void UpdateRowVersion(byte[] rowVersion) =>
-        RowVersion = Guard.Against.Null(rowVersion, exceptionCreator: () => new DomainException("Row version cannot be null"));
 
     public void AddDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
 
