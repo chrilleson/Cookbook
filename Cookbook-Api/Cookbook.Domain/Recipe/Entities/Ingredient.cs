@@ -10,8 +10,8 @@ public sealed class Ingredient
 
     public Ingredient(string name, Quantity quantity)
     {
-        Name = Guard.Against.NullOrWhiteSpace(name, exceptionCreator: () => new ArgumentException("Ingredient name cannot be empty", nameof(name)));
-        Quantity = quantity;
+        Name = Guard.Against.NullOrWhiteSpace(name, nameof(name));
+        Quantity = Guard.Against.Null(quantity, nameof(quantity));
     }
 
     public void UpdateQuantity(Quantity quantity) =>

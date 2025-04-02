@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Ardalis.GuardClauses;
 using Cookbook.Domain.Recipe.Events;
 using Cookbook.Domain.Recipe.ValueObjects;
@@ -26,7 +26,7 @@ public sealed class Recipe
 
     public Recipe(RecipeId id, string name, string? description = null)
     {
-        Id = id;
+        Id = Guard.Against.Null(id, nameof(id));
         Name = Guard.Against.NullOrEmpty(name, nameof(name));
         Description = description;
 
@@ -48,8 +48,7 @@ public sealed class Recipe
     public void AddInstruction(string instructionText)
     {
         var stepNumber = _instructions.Count + 1;
-        var text = Guard.Against.NullOrWhiteSpace(instructionText, exceptionCreator: () => new DomainException("Instruction text cannot be empty"));
-        _instructions.Add(new Instruction(stepNumber, text));
+        _instructions.Add(new Instruction(stepNumber, instructionText));
     }
 
     public void UpdateInstruction(int stepNumber, string instructionText)
