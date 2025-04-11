@@ -1,11 +1,12 @@
-﻿using Ardalis.Result;
-using Ardalis.Result.AspNetCore;
-using Cookbook.Application.Extensions;
+using Ardalis.Result;
+using Cookbook.Api.Constants;
+using Cookbook.Api.Extensions;
 using Cookbook.Application.Recipe.Commands;
 using Cookbook.Application.Recipe.Models;
 using Cookbook.Application.Recipe.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace Cookbook.Api.Endpoints.Recipe;
 
@@ -27,7 +28,7 @@ public class RecipeEndpoint : IEndpoint
 
                 return result.ToMinimalApiResult();
             })
-            .CacheOutput()
+            .CacheOutput(RecipeConstants.CacheTagListRecipes)
             .Produces<IEnumerable<RecipeDto>>();
 
         group.MapGet("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) =>
@@ -42,16 +43,19 @@ public class RecipeEndpoint : IEndpoint
                     _ => result.ToMinimalApiResult(),
                 };
             })
-            .CacheOutput()
+            .CacheOutput(RecipeConstants.CacheTagRecipeById)
             .Produces<RecipeDto>()
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesValidationProblem();
 
-        group.MapPost("/", async (IMediator mediator, CreateRecipeDto recipeDto, CancellationToken cancellationToken) =>
+        group.MapPost("/", async (CreateRecipeDto recipeDto, IMediator mediator, IOutputCacheStore cacheStore, CancellationToken cancellationToken) =>
             {
                 var result = await new Result()
                     .Map(() => new CreateRecipeCommand(recipeDto))
                     .BindAsync(x => mediator.Send(x, cancellationToken));
+
+                await InvalidateCache(result, RecipeConstants.CacheTagListRecipes, cacheStore, cancellationToken);
+
 
                 return result switch
                 {
@@ -62,11 +66,14 @@ public class RecipeEndpoint : IEndpoint
             .Produces<RecipeDto>(StatusCodes.Status201Created)
             .ProducesValidationProblem();
 
-        group.MapDelete("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) =>
+        group.MapDelete("/{id:int}", async (int id, IMediator mediator, IOutputCacheStore cacheStore, CancellationToken cancellationToken) =>
             {
                 var result = await new Result()
                     .Map(() => new RemoveRecipeCommand(id))
                     .BindAsync(x => mediator.Send(x, cancellationToken));
+
+                await InvalidateCache(result, RecipeConstants.CacheTagRecipeById, cacheStore, cancellationToken);
+
 
                 return result switch
                 {
@@ -78,11 +85,14 @@ public class RecipeEndpoint : IEndpoint
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesValidationProblem();
 
-        group.MapPut("/{id:int}", async (IMediator mediator, int id, [FromBody] UpdateRecipeDto recipeDto, CancellationToken cancellationToken) =>
+        group.MapPut("/{id:int}", async (int id, [FromBody] UpdateRecipeDto recipeDto, IMediator mediator, IOutputCacheStore cacheStore, CancellationToken cancellationToken) =>
             {
                 var result = await new Result()
                     .Map(() => new UpdateRecipeCommand(id, recipeDto))
                     .BindAsync(x => mediator.Send(x, cancellationToken));
+
+                await InvalidateCache(result, RecipeConstants.CacheTagRecipeById, cacheStore, cancellationToken);
+
 
                 return result switch
                 {
@@ -93,5 +103,13 @@ public class RecipeEndpoint : IEndpoint
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesValidationProblem();
+    }
+
+    private static async Task InvalidateCache<T>(Result<T> result, string cacheTag, IOutputCacheStore cacheStore, CancellationToken cancellationToken)
+    {
+        if (result.IsSuccess)
+        {
+            await cacheStore.EvictByTagAsync(cacheTag, cancellationToken);
+        }
     }
 }

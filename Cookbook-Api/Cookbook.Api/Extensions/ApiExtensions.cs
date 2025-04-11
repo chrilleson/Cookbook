@@ -16,7 +16,8 @@ public static class ApiExtensions
             .AddEndpoints(Assembly.GetExecutingAssembly())
             .ConfigureHttpJsonOptions(options => CustomJsonOptions.Configure(options.SerializerOptions))
             .AddEndpointsApiExplorer()
-            .AddSwagger();
+            .AddSwagger()
+            .AddCachePolicies();
         services.AddHealthChecks();
 
         return services;
