@@ -33,7 +33,7 @@ public class CreateRecipeCommandHandler : IRequestHandler<CreateRecipeCommand, R
     {
         try
         {
-            var id = new RecipeId(_idGenerator.GenerateNextId());
+            var id = new RecipeId(await _idGenerator.GenerateNextId(cancellationToken));
             var recipe = new Domain.Recipe.Entities.Recipe(id, request.Recipe.Name, request.Recipe.Description);
 
             foreach (var instruction in request.Recipe.Instructions)

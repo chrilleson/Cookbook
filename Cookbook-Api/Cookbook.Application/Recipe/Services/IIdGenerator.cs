@@ -2,5 +2,5 @@
 
 public interface IIdGenerator
 {
-    int GenerateNextId();
+    Task<int> GenerateNextId(CancellationToken cancellationToken = default);
 }

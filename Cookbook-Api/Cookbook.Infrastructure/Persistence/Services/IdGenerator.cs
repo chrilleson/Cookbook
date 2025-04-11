@@ -6,19 +6,17 @@ namespace Cookbook.Infrastructure.Persistence.Services;
 public class IdGenerator : IIdGenerator
 {
     private readonly AppDbContext _dbContext;
-    private readonly string _sequenceName;
 
-    public IdGenerator(AppDbContext dbContext, string sequenceName = "recipe_id_seq")
+    private const string RecipeIdSequenceName = "Recipe_Id_seq";
+
+    public IdGenerator(AppDbContext dbContext)
     {
         _dbContext = dbContext;
-        _sequenceName = sequenceName;
     }
 
-    public int GenerateNextId()
-    {
-        var result = _dbContext.Database
-            .ExecuteSql($"SELECT nextval('{_sequenceName}')");
-
-        return result;
-    }
+    public async Task<int> GenerateNextId(CancellationToken cancellationToken = default) =>
+        (await _dbContext.Database
+            .SqlQueryRaw<int>($"""SELECT nextval('"{RecipeIdSequenceName}"')""")
+            .ToListAsync(cancellationToken))
+        .First();
 }
