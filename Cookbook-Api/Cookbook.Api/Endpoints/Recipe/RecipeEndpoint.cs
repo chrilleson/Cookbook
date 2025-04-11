@@ -1,4 +1,4 @@
-using Ardalis.Result;
+﻿using Ardalis.Result;
 using Cookbook.Api.Constants;
 using Cookbook.Api.Extensions;
 using Cookbook.Application.Recipe.Commands;
@@ -26,22 +26,18 @@ public class RecipeEndpoint : IEndpoint
                     .Map(() => new GetAllRecipesQuery())
                     .BindAsync(x => mediator.Send(x, cancellationToken));
 
-                return result.ToMinimalApiResult();
+                return result.MapResultToResponse();
             })
             .CacheOutput(RecipeConstants.CacheTagListRecipes)
             .Produces<IEnumerable<RecipeDto>>();
 
-        group.MapGet("/{id:int}", async (IMediator mediator, int id, CancellationToken cancellationToken) =>
+        group.MapGet("/{id:int}", async (int id, IMediator mediator, CancellationToken cancellationToken) =>
             {
                 var result = await new Result()
                     .Map(() => new GetRecipeByIdQuery(id))
                     .BindAsync(x => mediator.Send(x, cancellationToken));
 
-                return result switch
-                {
-                    { ValidationErrors: var errors, IsSuccess: false } when errors.Any() => Results.ValidationProblem(detail: "Validation failed", errors: result.ValidationErrors.AsDictionary()),
-                    _ => result.ToMinimalApiResult(),
-                };
+                return result.MapResultToResponse();
             })
             .CacheOutput(RecipeConstants.CacheTagRecipeById)
             .Produces<RecipeDto>()
@@ -56,12 +52,7 @@ public class RecipeEndpoint : IEndpoint
 
                 await InvalidateCache(result, RecipeConstants.CacheTagListRecipes, cacheStore, cancellationToken);
 
-
-                return result switch
-                {
-                    { ValidationErrors: var errors, IsSuccess: false } when errors.Any() => Results.ValidationProblem(detail: "Validation failed", errors: result.ValidationErrors.AsDictionary()),
-                    _ => result.ToMinimalApiResult(),
-                };
+                return result.MapResultToResponse();
             })
             .Produces<RecipeDto>(StatusCodes.Status201Created)
             .ProducesValidationProblem();
@@ -74,12 +65,7 @@ public class RecipeEndpoint : IEndpoint
 
                 await InvalidateCache(result, RecipeConstants.CacheTagRecipeById, cacheStore, cancellationToken);
 
-
-                return result switch
-                {
-                    { ValidationErrors: var errors, IsSuccess: false } when errors.Any() => Results.ValidationProblem(detail: "Validation failed", errors: result.ValidationErrors.AsDictionary()),
-                    _ => result.ToMinimalApiResult(),
-                };
+                return result.MapResultToResponse();
             })
             .Produces(StatusCodes.Status204NoContent)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -93,12 +79,7 @@ public class RecipeEndpoint : IEndpoint
 
                 await InvalidateCache(result, RecipeConstants.CacheTagRecipeById, cacheStore, cancellationToken);
 
-
-                return result switch
-                {
-                    { ValidationErrors: var errors, IsSuccess: false } when errors.Any() => Results.ValidationProblem(detail: "Validation failed", errors: result.ValidationErrors.AsDictionary()),
-                    _ => result.ToMinimalApiResult(),
-                };
+                return result.MapResultToResponse();
             })
             .Produces(StatusCodes.Status200OK)
             .ProducesProblem(StatusCodes.Status404NotFound)
